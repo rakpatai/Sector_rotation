@@ -1,27 +1,22 @@
 # Sector Rotation — RRG Dashboard
 
-One self-contained page, **bilingual (ไทย / English)**. No build step, no dependencies — open `index.html` or host it as-is. The language switch sits at the left of the sticky nav and re-renders the charts as well as the text.
+One self-contained page, in Thai with English finance terms. No build step, no dependencies — open `index.html` or host it as-is.
 
-**Data as of 24 Jul 2026.** X = relative 3-month return (RS-Ratio) · Y = relative 1-month return (RS-Momentum) · every group measured against its own benchmark.
+**Data as of 30 Sep 2026** — Bloomberg total return, local currency. The 1-month window starts 31 Aug and the 3-month window starts 30 Jun. X = relative 3-month return (RS-Ratio) · Y = relative 1-month return (RS-Momentum) · every group is measured against its own benchmark.
 
-**Live:** https://rakpatai.github.io/sector_rotation/
+**Live:** https://rakpatai.github.io/Sector_rotation/
 
 ## Contents
 
 | § | Section |
 |---|---|
-| 01 | Market level — 14 global markets (USD) |
-| 02 | Market tails — path across three snapshots (30 Jun → 8 Jul → 24 Jul), full range and zoomed |
-| 03 | What the market tails reveal |
-| 04 | Sector RRG — SET · Hong Kong · China A (local currency) |
-| 05 | Sector tails — SET, 27 sectors |
-| 06 | Sector tails — Hong Kong (12) and China A (10) |
-| 07 | What the sector tails reveal |
-| 08 | US deep dive — 126 S&P 500 sub-industries |
-| 09 | US sub-industry tails — 40 biggest movers (2 snapshots) |
-| 10 | Cross-market threads |
-| 11 | Data tables — full returns plus the market journey table |
-| 12 | Macro drivers — timeline and watchlist |
+| 01 | Market level — S&P 500 · SET · HSCI · CSI 300 against their equal-weight composite, local currency, with tails across four snapshots (10 Aug → 31 Aug → 4 Sep → 30 Sep) and a quadrant journey table |
+| 02 | Sectors by market — SET (27), Hong Kong HSCI (12) and China A CSI 300 (10), with tails |
+| 03 | US sub-industry drill-down — 127 S&P 500 sub-industries, plus tails for the 36 largest movers |
+| 04 | US thematic ETFs — 21 AUM-weighted themes and 260 ETFs (USD) |
+| 05 | What changed since 4 Sep — quadrant crossings |
+| 06 | Cross-market threads — with a rates / credit / commodities context strip |
+| 07 | Data — the full table, with each group's quadrant path |
 
 ## Reading the quadrants
 
@@ -32,31 +27,33 @@ One self-contained page, **bilingual (ไทย / English)**. No build step, no 
 | ≥0 | <0 | Weakening | was leading, losing momentum — earliest rotation-out signal |
 | <0 | <0 | Lagging | weak on both |
 
-**"Lagging" does not mean "down."** Everything is relative to a benchmark, so a group can rise and still lag a strong index. Equally, when a benchmark cools the Leading bucket widens mechanically — arithmetic, not broadening strength.
+**"Lagging" does not mean "down."** Everything is relative to a benchmark, so a group can rise and still lag a strong index. Equally, when a benchmark falls the Leading bucket widens mechanically — a group can lead simply by falling less.
 
-## Snapshot (24 Jul 2026)
+## Snapshot (30 Sep 2026)
 
-The global composite cooled to roughly flat over 3M, from +11% at end-June. AI/tech leaders (Taiwan, Nasdaq, Japan) rotated into **Weakening**; value/defensive plus Southeast Asia (Singapore, Dow, Thailand, US, Europe) took the lead; Hong Kong, Indonesia and Malaysia turned **Improving**. In the US, semis rolled over — Semiconductor Equipment fell 16.6% over 1M while still up 18% over 3M — as leadership passed to refining and healthcare.
+The index and what sits inside it parted ways. The S&P 500 is −0.3% over one month, but the median of its 127 sub-industries is −6.1% and only 22 groups are up. Mega-cap tech and AI hardware carried the index — Semiconductors moved into Leading, and Semiconductor Equipment gained 10.6% over one month while still down 28.3% over three — as rate-sensitive groups, US banks and consumer names were sold in a month when the Fed raised rates and the 10-year Treasury yield rose 54bp. Gold and materials reversed: the one-month return of the S&P 500 Gold sub-industry swung from +31.3% at the 4 Sep snapshot to −8.3%.
 
-The tails add the path rather than the snapshot. China A walked the full textbook clockwise route (Leading → Weakening → Lagging); Thailand jumped from Lagging straight to Leading without passing through Improving; the Dow never changed quadrant. At sector level China A moved all ten groups, Thai Electronics decayed Weakening → Weakening → Lagging, and Thai Banking held Leading while its relative 3M climbed from +4 to +18. The largest single journey on the board is US Semiconductor Equipment, whose relative 3M fell from +96 to +15.
+At market level the US is Leading for a fourth straight snapshot, Hong Kong slipped to Weakening, Thailand moved to Improving only because China and Hong Kong fell further, and China A is the deepest Lagging (CSI 300 −11.7% over three months). The four-market composite (3M / 1M) went +2.2 / +2.1 → +1.0 / −0.7 → −0.7 / −0.7 → −1.1 / −2.9 across the four snapshots.
 
 ## Data & method
 
-- Sector and sub-industry data: Bloomberg official sector indices, trailing 1M/3M, local currency
-- Market level: US-listed country ETFs — returns are in **USD and include FX**, deliberately a different basis from the sector panels, flagged on the page
-- Market-level benchmark: equal-weight average of the 14 markets, recomputed each snapshot (+11.3% → +7.3% → −0.2%)
-- Return basis differs across snapshots (30 Jun and 8 Jul price return; 24 Jul total return) — read tail direction rather than exact distance
-- US tails use **two** snapshots (30 Jun → 24 Jul) and show the 40 largest movers of the 124 groups matched across both dates
+- Sector indices, sub-industries and ETFs: Bloomberg **total return**, local currency. The 10 Aug and 31 Aug snapshots use `CURRENT_TRR` fields; 4 Sep and 30 Sep use BQL `TOTAL_RETURN` over a date range.
+- **Windows differ between snapshots** (30 Sep: from 30 Jun / 31 Aug · 4 Sep: from 4 Jun / 4 Aug · 31 Aug: from 29 May / 31 Jul), and the snapshots are unevenly spaced — read the direction of a tail rather than its length.
+- Market-level benchmark: the equal-weight average of the four indices at each snapshot. No FX adjustment.
+- The SET Index benchmark is a **price** index computed from index closes, while Thai sectors are total return — Thai sectors therefore carry a small edge over their benchmark, most visibly the high-dividend groups.
+- US sub-industries: 127 of 163 groups carry data. US and thematic tails have three points (there is no usable 31 Aug US snapshot).
+- Section 04 is in **USD**, unlike sections 01–03. Theme composites are AUM-weighted across the 160 ETFs that carry a classification; the ETF scatter plots all 260, including leveraged and inverse products.
+- The context figures in section 06 (rates, HY spread, gold, copper, Brent) come from FRED and FMP, not Bloomberg.
 
-## Publish to GitHub Pages
+The full list of caveats is in the footer of the page.
 
-Remote is preset to `https://github.com/rakpatai/sector_rotation.git` and a commit is ready.
+## Archive
 
-```bash
-git push -u origin main --force   # --force only needed if the repo already has history
-```
+| File | Edition |
+|---|---|
+| [`archive/260724.html`](https://rakpatai.github.io/Sector_rotation/archive/260724.html) | Data as of 24 Jul 2026 — bilingual (ไทย / English), 14 global markets in USD, sector tails and a macro-driver timeline |
 
-Then **Settings → Pages → Deploy from a branch → `main` / `/ (root)` → Save**. Live after ~1 minute.
+Each new edition replaces `index.html`; the edition it replaces moves to `archive/<YYMMDD>.html`, named by its as-of date.
 
 ---
 

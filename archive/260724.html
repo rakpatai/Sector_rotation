@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+
+<html lang="th">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sector Rotation — RRG Dashboard (24 ก.ค. 2026)</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&amp;family=Inter:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --navy:#0E1B2E; --panel:#16263E; --panel2:#1B2F4C; --line:#2A415F;
+    --ink:#EAF0F7; --mut:#94A8C2; --gold:#C9A84C;
+    --lead:#33B884; --impr:#3E8EDE; --weak:#E0A92E; --lag:#DA5750;
+    --leadbg:rgba(51,184,132,.10); --imprbg:rgba(62,142,222,.10);
+    --weakbg:rgba(224,169,46,.10); --lagbg:rgba(218,87,80,.10);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:radial-gradient(1200px 600px at 80% -5%, #1A2E4B 0%, transparent 60%),var(--navy);
+    color:var(--ink);font-family:"Inter",system-ui,sans-serif;line-height:1.55;font-size:15px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:34px 22px 70px}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:0 0 10px}
+  h1{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(30px,5.2vw,52px);line-height:1.04;margin:0 0 12px;letter-spacing:-.01em}
+  h1 em{font-style:italic;color:var(--gold)}
+  .sub{color:var(--mut);max-width:780px;font-size:15.5px;margin:0 0 20px}
+  .asof{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--mut);display:flex;flex-wrap:wrap;gap:6px 18px;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:11px 0;margin-bottom:26px}
+  .asof b{color:var(--ink);font-weight:600}
+  .legend{display:flex;flex-wrap:wrap;gap:7px 16px;margin:0 0 30px}
+  .lg{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)}
+  .dotchip{width:11px;height:11px;border-radius:50%;flex:none}
+  .lg b{color:var(--ink);font-weight:600}
+  .shead{display:flex;align-items:baseline;gap:14px;margin:46px 0 16px;border-bottom:1px solid var(--line);padding-bottom:10px}
+  .snum{font-family:"IBM Plex Mono",monospace;color:var(--gold);font-size:13px;font-weight:600}
+  .shead h2{font-family:"Fraunces",serif;font-weight:600;font-size:22px;margin:0;letter-spacing:-.01em}
+  .shead .en{color:var(--mut);font-size:12.5px;font-family:"IBM Plex Mono",monospace;margin-left:auto;letter-spacing:.04em}
+  .hero{display:grid;grid-template-columns:1.35fr .95fr;gap:26px;align-items:stretch}
+  .card{background:linear-gradient(180deg,var(--panel) 0%,#13233A 100%);border:1px solid var(--line);border-radius:14px;padding:16px 16px 12px}
+  .card .ctitle{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin:2px 2px 8px}
+  .readbox{display:flex;flex-direction:column;gap:14px;justify-content:center}
+  .readbox p{margin:0;font-size:14.5px}
+  .readbox .big{font-family:"Fraunces",serif;font-size:19px;line-height:1.3;color:var(--ink)}
+  .readbox .mut{color:var(--mut);font-size:13.5px}
+  .grid4{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:4px}
+  .panel .phead{display:flex;align-items:baseline;gap:9px;margin:0 2px 4px}
+  .panel .flag{font-size:17px;line-height:1}
+  .panel .pname{font-family:"Fraunces",serif;font-weight:600;font-size:17px}
+  .panel .pbench{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--mut);margin-left:auto;text-align:right}
+  .panel .pread{font-size:12.8px;color:var(--mut);margin:8px 4px 2px}
+  .panel .pread b{color:var(--ink);font-weight:600}
+  svg.rrg{width:100%;height:auto;display:block}
+  .axcap{font-family:"IBM Plex Mono",monospace;font-size:9px;fill:var(--mut);letter-spacing:.08em}
+  .qlab{font-family:"IBM Plex Mono",monospace;font-size:8.5px;font-weight:600;letter-spacing:.1em}
+  .tk{font-family:"IBM Plex Mono",monospace;font-size:9px;fill:var(--ink)}
+  .tkbig{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;fill:var(--ink)}
+  .zeroln{stroke:#3B567A;stroke-width:1.3;stroke-dasharray:3 3}
+  .threads{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .thread{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:10px;padding:14px 16px}
+  .thread h3{margin:0 0 6px;font-size:14.5px;font-family:"Inter",sans-serif;font-weight:600;color:var(--ink)}
+  .thread p{margin:0;color:var(--mut);font-size:13.4px}
+  .thread .em{color:var(--gold);font-weight:600}
+  .bignote{background:linear-gradient(110deg,#1C3050,#142440);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-top:18px}
+  .bignote .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0 0 8px}
+  .bignote p{margin:0;font-size:15px}
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin-top:6px}
+  table{border-collapse:collapse;width:100%;min-width:640px;font-size:13px}
+  thead th{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);
+    text-align:right;padding:11px 12px;border-bottom:1px solid var(--line);background:#13233A;position:sticky;top:0}
+  thead th.l,tbody td.l{text-align:left}
+  tbody td{padding:9px 12px;text-align:right;border-bottom:1px solid #21364F;font-family:"IBM Plex Mono",monospace;font-size:12.5px}
+  tbody tr:hover{background:#16273F}
+  .mkthead td{background:#1A2E4B;font-family:"Fraunces",serif;font-weight:600;font-size:14px;color:var(--gold);text-align:left;letter-spacing:.01em;padding:10px 12px}
+  .pos{color:var(--lead)} .neg{color:var(--lag)}
+  .qpill{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+  td .nm{font-family:"Inter",sans-serif;color:var(--ink);font-size:13px}
+  td .tkr{color:var(--mut);font-size:11px}
+  footer{margin-top:48px;border-top:1px solid var(--line);padding-top:18px;color:var(--mut);font-size:12px}
+  footer b{color:var(--ink)}
+  .disc{background:rgba(218,87,80,.07);border:1px solid rgba(218,87,80,.3);border-radius:10px;padding:12px 15px;margin-top:14px;color:#E7B6B2;font-size:12.3px}
+  .usbar{background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.32);border-radius:9px;padding:10px 14px;margin:0 0 16px;font-size:13px;color:#E4D2A0}
+  .usbar b{color:var(--gold)}
+  .grid2usd{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+  .tbl h4{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin:0 0 8px;display:flex;align-items:center;gap:8px;color:var(--ink)}
+  .qd{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:2px;vertical-align:-1px}
+  @media (max-width:820px){.hero{grid-template-columns:1fr}.grid4{grid-template-columns:1fr}.threads{grid-template-columns:1fr}.grid2usd{grid-template-columns:1fr}.shead .en{display:none}}
+  .fxbar{background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.32);border-radius:10px;padding:12px 16px;margin:0 0 14px;font-size:13.3px;color:#E4D2A0}
+  .fxbar b{color:var(--gold)}
+  .cap{color:var(--mut);font-size:11.5px;margin:8px 2px 0}
+  .reads{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:16px}
+  .rc{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:14px 15px}
+  .rc h3{margin:0 0 8px;font-size:13.5px;display:flex;align-items:center;gap:7px;color:var(--ink)}
+  .rc .qd{width:9px;height:9px;border-radius:50%}
+  .rc p{margin:0;color:var(--mut);font-size:13px}.rc .em{color:var(--ink);font-weight:600}
+  @media (max-width:820px){.reads{grid-template-columns:1fr}}
+  .drv{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:4px}
+  .dcard{background:linear-gradient(180deg,var(--panel) 0%,#13233A 100%);border:1px solid var(--line);border-radius:13px;padding:16px 17px;display:flex;flex-direction:column}
+  .dcard .dnum{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.16em;color:var(--gold);margin-bottom:7px}
+  .dcard h3{font-family:"Fraunces",serif;font-weight:600;font-size:17px;margin:0 0 9px;line-height:1.25;color:var(--ink)}
+  .dcard p{margin:0 0 9px;color:var(--mut);font-size:13.3px}
+  .dcard .eff{margin-top:auto;border-top:1px solid var(--line);padding-top:9px;font-size:12.8px;color:var(--ink)}
+  .dcard .eff b{color:var(--gold);font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;display:block;margin-bottom:4px}
+  .tl{margin-top:20px;border-left:2px solid var(--line);padding-left:0}
+  .tlrow{display:grid;grid-template-columns:96px 1fr;gap:14px;padding:9px 0 9px 16px;border-left:2px solid transparent;margin-left:-2px;position:relative}
+  .tlrow::before{content:'';position:absolute;left:-5px;top:15px;width:8px;height:8px;border-radius:50%;background:var(--gold)}
+  .tlrow .d{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--gold);padding-top:1px}
+  .tlrow .t{font-size:13.3px;color:var(--mut)}
+  .tlrow .t b{color:var(--ink);font-weight:600}
+  .watch{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:18px}
+  .wc{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.28);border-radius:10px;padding:12px 14px;font-size:13px;color:#E4D2A0}
+  .wc b{color:var(--gold);display:block;margin-bottom:3px;font-size:13.5px}
+  @media (max-width:820px){.drv{grid-template-columns:1fr}.watch{grid-template-columns:1fr}.tlrow{grid-template-columns:1fr;gap:2px}}
+
+  /* --- merged: tails + nav --- */
+  .tailkey{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--mut);border:1px solid var(--line);border-radius:20px;padding:4px 12px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  thead th.r{text-align:right}
+  tbody td.r{text-align:right;font-family:"IBM Plex Mono",monospace;font-size:12.5px}
+  .qp{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:11px;padding:2px 7px;border-radius:20px;font-weight:600}
+  .arrow{color:var(--mut);margin:0 5px;font-size:11px}
+  .moved{color:var(--gold);font-family:"IBM Plex Mono",monospace;font-size:11px}
+  nav.jump{position:sticky;top:0;z-index:20;background:rgba(14,27,46,.93);backdrop-filter:blur(9px);
+    border-bottom:1px solid var(--line);margin:0 -22px 22px;padding:9px 22px;display:flex;gap:5px;overflow-x:auto;scrollbar-width:thin}
+  nav.jump a{flex:none;font-family:"IBM Plex Mono",monospace;font-size:10.8px;letter-spacing:.03em;color:var(--mut);
+    text-decoration:none;padding:5px 10px;border:1px solid var(--line);border-radius:20px;white-space:nowrap;transition:.15s}
+  nav.jump a:hover{color:var(--ink);border-color:var(--gold)}
+  nav.jump a b{color:var(--gold);font-weight:600;margin-right:5px}
+  .shead{scroll-margin-top:58px}
+  .langsw{flex:none;display:flex;gap:0;border:1px solid var(--gold);border-radius:20px;overflow:hidden;margin-right:4px}
+  .langsw button{font-family:"IBM Plex Mono",monospace;font-size:10.8px;letter-spacing:.04em;background:transparent;
+    color:var(--mut);border:0;padding:5px 11px;cursor:pointer;transition:.15s}
+  .langsw button.on{background:var(--gold);color:#0E1B2E;font-weight:600}
+  .langsw button:not(.on):hover{color:var(--ink)}
+  @media (max-width:820px){.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<p class="eyebrow">Relative Rotation Graph · Official Sector Indices</p>
+<h1>Cross-Market <em>Sector Rotation</em></h1>
+<p class="sub" data-i18n="t0">เงินกำลังหมุนไปไหน — ภาพระดับตลาด 4 ดัชนี → sector ใน 3 ตลาด (ไทย/ฮ่องกง/จีน A) → เจาะ 126 sub-industries ของสหรัฐฯ. แกนนอน = relative 3 เดือน, แกนตั้ง = relative 1 เดือน (เทียบดัชนีตลาด, สกุลท้องถิ่น).</p>
+<div class="asof">
+<span data-i18n="t1">ทั้งหมด ณ <b>24 ก.ค. 2026</b> · Market-level: 14 ETF (USD) · Sectors: SET/HK/China A (LCL) · US: 126 sub-industries</span>
+<span>Bloomberg trailing 1M/3M, total return</span>
+</div>
+<nav class="jump">
+    <span class="langsw"><button id="btnTH" class="on">ไทย</button><button id="btnEN">EN</button></span>
+<a data-i18n="t7" href="#s1"><b>01</b>ระดับตลาด</a><a data-i18n="t8" href="#s2"><b>02</b>หางระดับตลาด</a><a data-i18n="t9" href="#s3"><b>03</b>หางบอกอะไร</a>
+<a data-i18n="t10" href="#s4"><b>04</b>ราย sector</a><a data-i18n="t11" href="#s5"><b>05</b>หาง SET</a><a data-i18n="t12" href="#s6"><b>06</b>หาง HK·จีน</a>
+<a data-i18n="t13" href="#s7"><b>07</b>หาง sector เล่า</a><a href="#s8"><b>08</b>US 126</a><a data-i18n="t14" href="#s9"><b>09</b>หาง US</a>
+<a data-i18n="t15" href="#s10"><b>10</b>เส้นที่ร้อย</a><a data-i18n="t16" href="#s11"><b>11</b>ตาราง</a><a data-i18n="t17" href="#s12"><b>12</b>ปัจจัยขับเคลื่อน</a>
+</nav>
+<div class="legend">
+<span class="lg" data-i18n="t2"><span class="dotchip" style="background:var(--lead)"></span><b>Leading</b> ผู้นำ</span>
+<span class="lg" data-i18n="t3"><span class="dotchip" style="background:var(--impr)"></span><b>Improving</b> เงินเริ่มไหลเข้า</span>
+<span class="lg" data-i18n="t4"><span class="dotchip" style="background:var(--weak)"></span><b>Weakening</b> เคยนำ กำลังแผ่ว</span>
+<span class="lg" data-i18n="t5"><span class="dotchip" style="background:var(--lag)"></span><b>Lagging</b> อ่อนทั้งคู่</span>
+<span class="lg" data-i18n="t6" style="color:var(--mut)">· hover จุดเพื่อดูตัวเลขเต็ม</span>
+</div>
+<div class="shead" id="s1"><span class="snum">01</span><h2 data-i18n="t18">ภาพระดับตลาด — 14 ตลาดทั่วโลก</h2><span class="en">GLOBAL MARKET-LEVEL RRG · USD · 24 Jul</span></div>
+<div class="fxbar" data-i18n="t34">💱 <b>ระดับตลาด สกุล USD</b> (24 ก.ค.): โลกเย็นลงจนเกือบแบน (avg 3M −0.2%). <b>ผู้นำ growth ม้วนต่อ</b> — Taiwan/Nasdaq/Japan ตกไป Weakening; <b>Value + SE Asia นำแทน</b> (Singapore/Dow/ไทย/US/Europe); HK/Indonesia/Malaysia เด้ง (Improving) · <b>section 02 = sector สกุลท้องถิ่น</b></div>
+<div class="card">
+<div class="ctitle">14 indices · vs equal-weight composite (USD) · avg 3M −0.2% / 1M −0.1%</div>
+<svg aria-label="Global market-level RRG" class="rrg" id="mkt" role="img" viewbox="0 0 900 520"></svg>
+</div>
+<p class="cap" data-i18n="t38">ซูมกลุ่มกลาง — <b style="color:var(--ink)">Taiwan (+11%)</b> / <b style="color:var(--ink)">Indonesia (−20%)</b> / <b style="color:var(--ink)">Vietnam (−13%)</b> เป็นขอบ</p>
+<div class="reads">
+<div class="rc"><h3><span class="qd" style="background:var(--lead)"></span>Leading (5)</h3><p data-i18n="t45"><span class="em">Singapore</span> (+10%), <span class="em">Dow · ไทย · US · Europe</span> — value/defensive + SE Asia นำแทน growth</p></div>
+<div class="rc"><h3><span class="qd" style="background:var(--weak)"></span>Weakening (3)</h3><p data-i18n="t46"><span class="em">Taiwan · Nasdaq · Japan</span> — ผู้นำ AI/tech เทรนด์ยังบวกแต่โมเมนตัมพลิกลบ = หมุนออกต่อ</p></div>
+<div class="rc"><h3><span class="qd" style="background:var(--impr)"></span>Improving + Lagging</h3><p data-i18n="t47">เด้ง: <span class="em">HK · Indonesia · Malaysia</span> (1M กลับบวก) · อ่อน: <span class="em">China A · India · Vietnam</span></p></div>
+</div>
+<div class="shead" id="s2"><span class="snum">02</span><h2 data-i18n="t19">หางระดับตลาด — เส้นทาง 3 รอบ</h2><span class="en">FULL RANGE</span></div>
+<div class="card">
+<div class="ctitle" data-i18n="t30">14 markets · full range · ไต้หวันเดินทางไกลที่สุด</div>
+<svg aria-label="RRG tails full range" class="rrg" id="full" role="img" viewbox="0 0 1020 600"></svg>
+</div>
+<p class="cap" data-i18n="t39">สเกลเต็มทำให้เห็นว่า <b style="color:var(--ink)">ไต้หวัน</b> ร่วงจาก rel3M +46 มาที่ +11 ในสามสัปดาห์ และ <b style="color:var(--ink)">อินโดนีเซีย</b> ไต่จาก −38 ขึ้นมา −20 — แต่กลุ่มกลางจะเบียดกัน ดูต่อที่ภาพซูมด้านล่าง</p>
+<div class="card">
+<div class="ctitle" data-i18n="t31">zoom · rel3M −16…+16 · หางที่ออกนอกกรอบถูกตัดที่ขอบ</div>
+<svg aria-label="RRG tails zoomed" class="rrg" id="zoom" role="img" viewbox="0 0 1020 620"></svg>
+</div>
+<p class="cap" data-i18n="t40">ตัดขอบที่ ±16 เพื่อให้เห็นกลุ่มที่เบียดกันรอบศูนย์ — ไต้หวันกับอินโดนีเซียจะเข้ามาจากขอบ</p>
+<div class="shead" id="s3"><span class="snum">03</span><h2 data-i18n="t20">สิ่งที่หางระดับตลาดบอก</h2><span class="en">WHAT TAILS REVEAL</span></div>
+<div class="threads">
+<div class="thread"><h3 data-i18n="t48">🇹🇼 ไต้หวัน — ขาลงที่ต่อเนื่อง ไม่ใช่สะดุด</h3><p data-i18n="t74">หางยาวและชี้ลงซ้ายตลอดสองช่วง (<span class="em">+46 → +34 → +11</span> บนแกนนอน) การอยู่ Weakening สองรอบติดโดยระยะทางไม่ลดลง คือลักษณะของการหมุนออกจริง ไม่ใช่การพักฐานหนึ่งจังหวะ</p></div>
+<div class="thread"><h3 data-i18n="t49">🇨🇳 จีน A — เดินครบวงจรใน 3 จุด</h3><p data-i18n="t75"><span class="em">Leading → Weakening → Lagging</span> คือเส้นทางตามเข็มนาฬิกาแบบตำรา ตัวอย่างที่ชัดที่สุดว่าทำไม Weakening ถึงเป็นสัญญาณเตือน ไม่ใช่แค่การพักตัว</p></div>
+<div class="thread"><h3 data-i18n="t50">🇹🇭 ไทย — กระโดดข้ามช่อง</h3><p data-i18n="t76">อยู่ Lagging สองรอบแล้ว <span class="em">พุ่งเข้า Leading</span> รอบเดียว โดยไม่แวะ Improving การกระโดดแบบนี้มักมาจากเงินไหลเข้าเร็วมากกว่าการฟื้นตัวค่อยเป็นค่อยไป — ตรงกับภาพ flows เชิงกลไก และเป็นเหตุผลที่ต้องเฝ้าความยั่งยืน</p></div>
+<div class="thread"><h3 data-i18n="t51">🇸🇬 สิงคโปร์ — rotation-in แบบตำรา</h3><p data-i18n="t77"><span class="em">Improving → Leading → Leading</span> เข้าช่องนำแล้วอยู่ต่อ พร้อมหางที่ยังชี้ขึ้นขวา เป็นรูปแบบที่มีความต่อเนื่องสูงสุดในบอร์ดนี้</p></div>
+<div class="thread"><h3 data-i18n="t52">🇮🇳 อินเดีย — Improving ที่ไม่สำเร็จ</h3><p data-i18n="t78"><span class="em">Improving → Improving → Lagging</span> เตือนว่าช่อง Improving ไม่ได้การันตีว่าจะไปต่อ ประมาณ 1 ใน 3 ของสัญญาณกลับตกลงไปช่องเดิม จึงควรทยอยไม่ทุ่ม</p></div>
+<div class="thread"><h3 data-i18n="t53">🇺🇸 Dow — ตัวเดียวที่ไม่เคยขยับช่อง</h3><p data-i18n="t79">อยู่ <span class="em">Leading ครบทั้งสามรอบ</span> ท่ามกลาง 12 จาก 14 ตลาดที่เปลี่ยนช่องอย่างน้อยหนึ่งครั้ง — ความนิ่งนี้เองคือข้อมูล: value/ปันผลเป็นที่หลบที่ทำงานได้จริงตลอดช่วง</p></div>
+</div>
+<div class="shead" id="s4"><span class="snum">04</span><h2 data-i18n="t21">RRG ราย sector — 3 ตลาด</h2><span class="en">SECTOR ROTATION · SET · HK · China A · local</span></div>
+<div class="grid4" id="panels"></div>
+<!-- ===== US DRILL-DOWN: SUB-INDUSTRIES ===== -->
+<div class="shead" id="s5"><span class="snum">05</span><h2 data-i18n="t22">หางราย sector — 🇹🇭 SET</h2><span class="en">27 SECTORS · LOCAL CCY</span></div>
+<div class="card">
+<div class="ctitle" data-i18n="t32">vs SET · benchmark 3M +9.8% → +6.1% → +11.9% · ป้ายชื่อเฉพาะ 12 กลุ่มที่เดินทางไกลสุด</div>
+<svg aria-label="SET sector tails" class="rrg" id="setT" role="img" viewbox="0 0 1020 620"></svg>
+</div>
+<p class="cap" data-i18n="t41"><b style="color:var(--ink)">18 จาก 27 กลุ่ม</b> เปลี่ยนช่องอย่างน้อยหนึ่งครั้ง — ETRON เดินจาก rel3M +12 ลงมา −12 ขณะที่ BANK ไต่จาก +4 ขึ้น +18</p>
+<div class="shead" id="s6"><span class="snum">06</span><h2 data-i18n="t23">หางราย sector — 🇭🇰 HK · 🇨🇳 China A</h2><span class="en">12 + 10 SECTORS</span></div>
+<div class="grid2">
+<div class="card">
+<div class="ctitle">🇭🇰 vs HSCI · benchmark 3M −8.0% → −8.0% → −4.7%</div>
+<svg aria-label="HK sector tails" class="rrg" id="hkT" role="img" viewbox="0 0 640 560"></svg>
+</div>
+<div class="card">
+<div class="ctitle">🇨🇳 vs CSI 300 · benchmark 3M +10.9% → +3.5% → −1.5%</div>
+<svg aria-label="China A sector tails" class="rrg" id="cnT" role="img" viewbox="0 0 640 560"></svg>
+</div>
+</div>
+<p class="cap" data-i18n="t42">จีน A <b style="color:var(--ink)">ย้ายช่องครบทั้ง 10 กลุ่ม</b> — การหมุนที่รุนแรงที่สุดในสามตลาด · HK ย้าย 7 จาก 12</p>
+<div class="shead" id="s7"><span class="snum">07</span><h2 data-i18n="t24">เรื่องที่หาง sector เล่า</h2><span class="en">SECTOR JOURNEYS</span></div>
+<div class="threads">
+<div class="thread"><h3 data-i18n="t54">🇨🇳 Info Tech จีน — ผู้นำที่กำลังสลาย</h3><p data-i18n="t80">rel3M <span class="em">+67 → +13</span> ในหกสัปดาห์ และช่องเปลี่ยนเป็น Weakening หางยาวที่สุดในทุกแผง เป็นภาพเดียวกับไต้หวัน/Nasdaq แต่รุนแรงกว่า</p></div>
+<div class="thread"><h3 data-i18n="t55">🇹🇭 ETRON — ตัวอย่าง Weakening ที่จบด้วย Lagging</h3><p data-i18n="t81">อิเล็กทรอนิกส์ไทยเดิน <span class="em">Weakening → Weakening → Lagging</span> (rel3M +12 → −12) ยืนยันว่าการอยู่ Weakening ซ้ำโดยหางไม่หักกลับ มักจบที่ Lagging</p></div>
+<div class="thread"><h3 data-i18n="t56">🇹🇭 BANK — ผู้นำที่ยิ่งนำ</h3><p data-i18n="t82">อยู่ Leading ครบสามรอบ และ rel3M <span class="em">ไต่ +4 → +9 → +18</span> หางชี้ขวาต่อเนื่อง = ธีมดอกเบี้ยสูงยังไม่หมดแรง ต่างจากผู้นำกลุ่มเทคที่หางหักกลับ</p></div>
+<div class="thread"><h3 data-i18n="t57">⛽ พลังงานพลิกพร้อมกันสามตลาด</h3><p data-i18n="t83">SETENERG <span class="em">Lagging → Lagging → Leading</span>, HK Energy และ CSI300 Energy เข้า <span class="em">Improving</span> ทั้งคู่ — ฮอร์มุซส่งผ่านเข้าทุกตลาดในจังหวะเดียวกัน</p></div>
+<div class="thread"><h3 data-i18n="t58">🇭🇰 Info Tech ฮ่องกง — แพ้เพราะเพื่อนวิ่ง</h3><p data-i18n="t84"><span class="em">Leading → Leading → Lagging</span> ทั้งที่ Kimi K3 เป็นข่าวดีของจีน เหตุผลคือ HSCI เด้ง +8.7% ใน 1 เดือน แต่ HSCIIT ขึ้นแค่ +2% — bar สูงขึ้นจนกลุ่มที่บวกน้อยกลายเป็นผู้ตาม</p></div>
+<div class="thread"><h3 data-i18n="t59">🛡️ Defensive จีนขึ้นแทน</h3><p data-i18n="t85">Utilities <span class="em">Lagging → Lagging → Leading</span> และ Staples/Health Care เข้า Improving — เมื่อธีม AI แผ่ว เงินในจีนหมุนเข้ากลุ่มกระแสเงินสด เหมือนที่เกิดในตลาดพัฒนาแล้ว</p></div>
+</div>
+<div class="shead" id="s8"><span class="snum">08</span><h2 data-i18n="t25">🇺🇸 เจาะลึก US — 126 sub-industries</h2><span class="en">US DRILL-DOWN · vs S&amp;P 500</span></div>
+<div class="usbar" data-i18n="t35">⚠️ <b>ตลาดเย็นลงต่อเนื่อง:</b> S&amp;P 500 3M +3.6% (จาก +13.4% เมื่อ 8 ก.ค.), tech/AI ม้วนแรง — Semicap 1M −16.6%!, Semis/Electronic Comp/IT Consulting อ่อน. ผู้นำ: Oil&amp;Gas Refining/Healthcare Srvc/Comp&amp;Elec Rtl/Pharma. <b>ครบ 126 กลุ่ม</b></div>
+<div class="card"><svg aria-label="US sub-industry RRG" class="rrg" id="usbig" role="img" viewbox="0 0 980 660"></svg></div>
+<p class="cap" data-i18n="t135">126 กลุ่ม เทียบ SPX (3M +3.6% / 1M +0.9%) — bar ที่ต่ำลงมากทำให้ช่อง Leading กว้างขึ้นโดยอัตโนมัติ ไม่ใช่เพราะตลาดแข็งขึ้น · hover ทุกจุดดูชื่อและตัวเลข · จุดที่เกินกรอบถูกตัดที่ขอบ</p>
+<div class="threads">
+<div class="thread"><h3 data-i18n="t60">🔬 ชิปแตกตัว — เทรนด์ยังบวก แต่โมเมนตัมพัง</h3><p data-i18n="t86"><span class="em">Semicap</span> 3M +18.2% แต่ 1M <span class="em">−16.6%</span> (Weakening) · <span class="em">Electronic Comp</span> 1M −20.3% (Lagging) · Semiconductors +3.3%/−0.9% · Elec Manu Svc และ IT Consulting อ่อนทั้งคู่ — ทั้ง value chain ถูกขาย ไม่ใช่แค่ผู้ผลิตชิป</p></div>
+<div class="thread"><h3 data-i18n="t61">🛢️ โรงกลั่นคือผู้นำตัวจริง</h3><p data-i18n="t87"><span class="em">Oil &amp; Gas Refining +30.3%</span> (3M) นำกลุ่มบน · Integrated Oil 1M +14.6% · Oil &amp; Gas E&amp;P 1M +9.9% — คอขวดอยู่ที่กำลังกลั่น ไม่ใช่น้ำมันดิบ (crack spread ทำ record)</p></div>
+<div class="thread"><h3 data-i18n="t62">💊 Healthcare กว้างและมีพื้นฐานรองรับ</h3><p data-i18n="t88">Healthcare Services <span class="em">+22.3%</span>, Managed Health Care +21.6%, Pharma +21.6%, HCare REITs +21.1%, Biotech +16.0%, Life &amp; Health Insurance +17.4% — ไม่ใช่แค่หลบภัย แต่มีอัตราจ่าย Medicare Advantage ปี 2027 ที่ ~+5% หนุน</p></div>
+<div class="thread"><h3 data-i18n="t63">📉 ผู้แพ้: ของใช้ในบ้าน · สื่อเก่า · ทอง</h3><p data-i18n="t89">Household Appliances <span class="em">−33.2%</span>, Cable &amp; Satellite −28.7%, Gold −19.5%, Movies &amp; Entertainment −15.1%, Auto Retail −14.8%, Automobile Mfrs −14.6% (3M) — กลุ่มที่โดนทั้งดอกเบี้ยสูงและกำลังซื้อชะลอ</p></div>
+</div>
+<div class="grid2usd">
+<div class="tbl card"><h4 data-i18n="t136"><span class="qd" style="background:var(--lead)"></span>US LEADING — ชนะ SPX +3.6% (top 14)</h4>
+<table><thead><tr><th class="l">Sub-industry</th><th>3M</th><th>1M</th><th>rel3M</th><th>rel1M</th></tr></thead><tbody id="utL"></tbody></table></div>
+<div class="tbl card"><h4><span class="qd" style="background:var(--weak)"></span>WEAKENING + worst LAGGING</h4>
+<table><thead><tr><th class="l">Sub-industry</th><th>3M</th><th>1M</th><th>rel3M</th><th>rel1M</th></tr></thead><tbody id="utWG"></tbody></table></div>
+</div>
+<div class="shead" id="s9"><span class="snum">09</span><h2 data-i18n="t26">หาง US sub-industries</h2><span class="en">40 BIGGEST MOVERS · 2 SNAPSHOTS</span></div>
+<div class="usbar" data-i18n="t36">⚠️ <b>ต่างจากแผงอื่น: มี 2 จุด ไม่ใช่ 3</b> — ชุดข้อมูล US ของวันที่ 8 ก.ค. ไม่ได้ถูกเก็บไว้ หางนี้จึงลากจาก <b>30 มิ.ย. → 24 ก.ค.</b> (ราว 8 สัปดาห์) และแสดงเฉพาะ <b>40 กลุ่มที่เดินทางไกลที่สุด</b> จาก 124 กลุ่มที่จับคู่ชื่อได้ — ภาพรวมทั้ง 126 กลุ่มอยู่ที่หัวข้อ 08</div>
+<div class="card">
+<div class="ctitle" data-i18n="t33">vs SPX · benchmark 3M +18.1% → +3.6% · ป้ายชื่อเฉพาะ 18 กลุ่มที่เดินไกลสุด</div>
+<svg aria-label="US sub-industry tails" class="rrg" id="usT" role="img" viewbox="0 0 1020 640"></svg>
+</div>
+<p class="cap" data-i18n="t43"><b style="color:var(--ink)">Semicap</b> เดินไกลที่สุดในทุกแผงของแดชบอร์ดนี้ — rel3M <b style="color:var(--ink)">+96 → +15</b> · ทิศทางรวมชัด: กลุ่มที่เคยอยู่ Lagging/Improving ไหลขึ้นขวา (พลังงาน · อาหาร · ประกัน) ส่วนคลัสเตอร์ชิปไหลลงซ้าย</p>
+<div class="threads" style="margin-top:16px">
+<div class="thread"><h3 data-i18n="t64">💥 ชิปคือการพลิกที่ใหญ่ที่สุด</h3><p data-i18n="t90"><span class="em">Semicap</span> Leading → Weakening (rel3M +96 → +15), <span class="em">Electronic Components</span> Leading → Lagging (+51 → −9), <span class="em">Semiconductors</span> Weakening → Lagging — ทั้งคลัสเตอร์เคลื่อนลงซ้ายพร้อมกัน ไม่ใช่กลุ่มเดียว</p></div>
+<div class="thread"><h3 data-i18n="t65">🛢️ น้ำมันพลิกกลับด้าน</h3><p data-i18n="t91"><span class="em">Integrated Oil</span> Lagging → Leading (−39 → +3) และ <span class="em">Oil &amp; Gas Refining</span> Improving → Leading (−16 → +27) — สองกลุ่มที่เคยถูกทิ้งกลายเป็นผู้นำภายในสองเดือน ตรงกับไทม์ไลน์ฮอร์มุซในหัวข้อ 12</p></div>
+<div class="thread"><h3 data-i18n="t66">↗️ ทิศทางรวมเอียงขึ้น</h3><p data-i18n="t92">ใน 40 กลุ่มที่เดินไกลสุด มี <span class="em">22 กลุ่มขยับไปช่องที่ดีขึ้น</span> (Improving→Leading 9 · Lagging→Improving 8 · Lagging→Leading 5) เทียบกับ 11 กลุ่มที่แย่ลง — ตลาดกำลังกระจายผู้นำออกจากธีมเดียว</p></div>
+<div class="thread"><h3 data-i18n="t67">⚡ Heavy Electrical — เหยื่อของธีม AI</h3><p data-i18n="t93">Leading → Lagging (rel3M +11 → −13) กลุ่มอุปกรณ์ไฟฟ้าหนักที่เคยวิ่งตามธีม data-center power ถูกขายพร้อมกลุ่มชิป แสดงว่าตลาดตัดทั้ง value chain ไม่ใช่แค่ผู้ผลิตชิป</p></div>
+</div>
+<div class="shead" id="s10"><span class="snum">10</span><h2 data-i18n="t27">เส้นที่ร้อยทุกตลาด</h2><span class="en">CROSS-MARKET THREADS</span></div>
+<div class="threads">
+<div class="thread"><h3 data-i18n="t68">🔌 AI/ชิปม้วนพร้อมกันทั่วโลก</h3><p data-i18n="t94">ระดับตลาด <span class="em">ไต้หวัน · Nasdaq · ญี่ปุ่น</span> เข้า Weakening พร้อมกัน · ราย sector: <span class="em">CSI300 Info Tech 1M −17.4%</span> (ขณะ 3M ยัง +11.7%), US Semicap 1M −16.6%, SET Electronics ตกไป Lagging — ธีมเดียวกันปรากฏทั้งสี่ตลาดในจังหวะเดียว</p></div>
+<div class="thread"><h3 data-i18n="t69">⛽ พลังงานคือธีมร่วมของทุกตลาด</h3><p data-i18n="t95"><span class="em">SETENERG</span> 3M +15.0% / 1M +14.0% เข้า Leading · <span class="em">HK Energy</span> 1M +11.9% และ <span class="em">CSI300 Energy</span> 1M +12.8% เข้า Improving ทั้งคู่ · US Refining +30.3% — ฮอร์มุซส่งผ่านเข้าทุกตลาดพร้อมกัน</p></div>
+<div class="thread"><h3 data-i18n="t70">🏦 แบงก์นำเกือบทุกที่ — ธีมดอกเบี้ยสูง</h3><p data-i18n="t96"><span class="em">SETBANK 3M +29.5%</span> นำ SET · <span class="em">HK Financials</span> เป็นกลุ่มเดียวที่ Leading ในฮ่องกง · CSI300 Financials ก็ Leading · US Diversified Banks +12.6% — higher-for-longer ส่งผลตรงกันทุกตลาด</p></div>
+<div class="thread"><h3 data-i18n="t71">💊 Healthcare หมุนเข้าหลายตลาดพร้อมกัน</h3><p data-i18n="t97">US นำด้วย Healthcare Services/Managed HC/Pharma · <span class="em">HK Health Care 1M +16.2%</span> (Improving) · <span class="em">CSI300 Health Care</span> เข้า Leading — สัญญาณ rotation เข้า defensive-growth ระดับโลก ไม่ใช่เรื่องเฉพาะสหรัฐ</p></div>
+<div class="thread"><h3 data-i18n="t72">🇭🇰 HK เด้งแรง แต่เทคไม่ตาม</h3><p data-i18n="t98">HSCI +8.7% ใน 1 เดือน แต่ <span class="em">HSCIIT ขึ้นแค่ +2.0%</span> จึงตกไป Lagging ทั้งที่ Kimi K3 เป็นข่าวดี — การเด้งนำโดย Materials/Health Care/Cons Disc/Financials คือ value-led ไม่ใช่ tech-led</p></div>
+<div class="thread"><h3 data-i18n="t73">🇨🇳 จีนหมุนเข้ากลุ่มกระแสเงินสด</h3><p data-i18n="t99"><span class="em">Utilities</span> ขึ้นเป็น Leading · Staples และ Health Care เข้า Improving · ขณะที่ <span class="em">Info Tech และ Telecom Services</span> ตกไป Weakening — รูปแบบเดียวกับที่เกิดในตลาดพัฒนาแล้ว เพียงช้ากว่าหนึ่งจังหวะ</p></div>
+</div>
+<div class="bignote">
+ <p class="k" data-i18n="t137">ภาพใหญ่</p>
+ <p data-i18n="t138"><b style="color:var(--lead)">ไทย</b> เป็นผู้รับเงินหมุนรอบนี้ (Lagging → Leading) นำโดยแบงก์/การเงิน/เครื่องจักร · <b style="color:var(--impr)">ฮ่องกง</b> เด้งแรงรอบเดือน (+8.7%) แต่นำโดย value ไม่ใช่เทค · <b style="color:var(--lag)">จีน A</b> พลิกจากกระทิงชิปเป็นหมุนเข้า defensive (Utilities/Financials/Health Care นำ ขณะ Info Tech ม้วน) · <b style="color:var(--lead)">US</b> bar ต่ำลงมาก (3M +3.6%) ผู้นำเปลี่ยนเป็นโรงกลั่นและ healthcare. ธีมร่วมทั้งโลก: <b>AI/ชิปม้วนพร้อมกันทุกตลาด</b> และ <b>พลังงานแข็งทุกที่</b>.</p>
+</div>
+<div class="shead" id="s11"><span class="snum">11</span><h2 data-i18n="t28">ตารางข้อมูล</h2><span class="en">FULL DATA · returns &amp; relative</span></div>
+<div class="tablewrap">
+<table>
+<thead><tr><th class="l">Sector</th><th>3M</th><th>1M</th><th>rel 3M</th><th>rel 1M</th><th class="l">Quadrant</th></tr></thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+<p class="cap" data-i18n="t44" style="margin-top:22px"><b style="color:var(--ink)">ตารางเส้นทางระดับตลาด</b> — เรียงตามระยะทางที่เดินใน 3 รอบ</p>
+<div class="tablewrap"><table>
+<thead><tr><th data-i18n="t127">ตลาด</th><th data-i18n="t128">เส้นทาง 30 มิ.ย. → 8 ก.ค. → 24 ก.ค.</th><th class="r" data-i18n="t129">rel3M เดินทาง</th><th class="r" data-i18n="t130">ระยะทางรวม</th></tr></thead>
+<tbody id="jt"></tbody>
+</table></div>
+<div class="shead" id="s12"><span class="snum">12</span><h2 data-i18n="t29">ปัจจัยขับเคลื่อน — ทำไม rotation เป็นแบบนี้</h2><span class="en">MACRO DRIVERS · Apr–Jul 2026</span></div>
+<div class="drv">
+<div class="dcard">
+<div class="dnum">DRIVER 01</div>
+<h3 data-i18n="t100">Fed "regime change" ใต้ Kevin Warsh</h3>
+<p data-i18n="t103">ประชุม 16–17 มิ.ย. คงดอกเบี้ย 3.50–3.75% แต่ <b style="color:var(--ink)">9 จาก 18 คนวาง dot ว่าจะ "ขึ้น"</b> ในปีนี้ (median 2026: 3.4%→3.8%, PCE 2.7%→3.6%) และตัด forward guidance ทิ้ง. CME ให้โอกาสขึ้นดอกเบี้ย ก.ย. ราว 50–62%.</p>
+<div class="eff" data-i18n="t106"><b>ผลต่อ ROTATION</b>Higher-for-longer → แบงก์นำทุกตลาด (SETBANK +29%, แบงก์สิงคโปร์ record high, US Div Banks +12.6%) · long-duration tech de-rate · <span style="color:var(--lag)">ทอง −19.5%</span></div>
+</div>
+<div class="dcard">
+<div class="dnum">DRIVER 02</div>
+<h3 data-i18n="t101">สงครามสหรัฐ–อิหร่าน + ฮอร์มุซ</h3>
+<p data-i18n="t104">หยุดยิง 17 มิ.ย. → <b style="color:var(--ink)">8 ก.ค. ประกาศ "จบแล้ว"</b> → 20 ก.ค. ปิดฮอร์มุซ → 22–23 ก.ค. Houthi ปิดล้อมทะเลแดง <b style="color:var(--ink)">Brent ทะลุ $100</b>. คอขวดจริงคือโรงกลั่น: 3-2-1 crack spread สหรัฐทำ record &gt;$60/บาร์เรล.</p>
+<div class="eff" data-i18n="t107"><b>ผลต่อ ROTATION</b>Oil&amp;Gas Refining <span style="color:var(--lead)">+30.3%</span> นำ US · Integrated Oil 1M +14.6% · SETENERG +15% · HK/CSI300 Energy 1M +12% · ดัน CPI สหรัฐแตะ 4.2% (พ.ค.) ก่อนเย็นเป็น 3.8%</div>
+</div>
+<div class="dcard">
+<div class="dnum">DRIVER 03</div>
+<h3 data-i18n="t102">วิกฤตศรัทธา AI capex</h3>
+<p data-i18n="t105">Q2 เป็น blowoff (SOX +88% ไตรมาสดีสุดในประวัติศาสตร์) แล้วพลิกในเดือนเดียว — Meta ขาย capacity ส่วนเกิน, TSMC ขึ้น capex เป็น $60–64B, <b style="color:var(--ink)">Moonshot Kimi K3</b> เปิดตัว, Alphabet/Tesla ขึ้น capex แล้วหุ้นร่วง.</p>
+<div class="eff" data-i18n="t108"><b>ผลต่อ ROTATION</b><span style="color:var(--weak)">Taiwan · Nasdaq · Japan → Weakening</span> · Semicap 1M −16.6% · Electronic Comp 1M −20.3% · CSI300 Info Tech 1M −17.4% · Software ยัง Lagging</div>
+</div>
+</div>
+<div class="usbar" data-i18n="t37" style="margin-top:20px">🔄 <b>เส้นที่ร้อยทุกตลาด:</b> ต่างชาติขายหุ้น EM Asia สุทธิ <b>$137.4 พันล้านใน H1 2026</b> — เร็วที่สุดเท่าที่มีข้อมูลย้อนถึงปี 2010 (เกาหลี −$70.8bn, ไต้หวัน −$29.6bn) เหตุผลไม่ใช่มองลบ แต่เป็น <b>concentration risk</b>: ถ้าไม่ trim, Samsung+SK Hynix จะพุ่งจาก 8.6% เป็น 21.5% ของ MSCI Asia ex-Japan เกิน limit สถาบัน → เงินถูกโยกไปหา laggard ราคาถูก = <b>ไทย · สิงคโปร์ · อินโดฯ</b></div>
+<div class="tl">
+<div class="tlrow"><div class="d" data-i18n="t109">1–2 ก.ค.</div><div class="t" data-i18n="t116"><b>Meta เตรียมขาย data center capacity ส่วนเกิน</b> — ตลาดสรุปว่า "compute ไม่ขาดแล้ว"; SOX −6.3% วันเดียว (KLA −12%, Lam −9.7%, AMAT −10%)</div></div>
+<div class="tlrow"><div class="d" data-i18n="t110">8 ก.ค.</div><div class="t" data-i18n="t117"><b>ทรัมป์ประกาศข้อตกลงอิหร่าน "จบแล้ว"</b> Brent +6% วันเดียว · วันเดียวกันหุ้นจีนใน HK พุ่งแรงสุดใน 14 เดือน จากเงินหมุนเข้าส่วนที่ยังไม่แน่นของตลาดโลก</div></div>
+<div class="tlrow"><div class="d" data-i18n="t111">14–15 ก.ค.</div><div class="t" data-i18n="t118">Warsh ให้การต่อสภา ย้ำไม่ยอมให้เงินเฟ้อค้างสูง · <b>CPI มิ.ย. เย็นกว่าคาด</b> (4.2%→3.8%) · จีนประกาศ <b>Q2 GDP โตต่ำสุดตั้งแต่ 2022</b> ต่ำกว่าคาด</div></div>
+<div class="tlrow"><div class="d" data-i18n="t112">16 ก.ค.</div><div class="t" data-i18n="t119"><b>TSMC งบดีแต่ขึ้น capex $52–56B → $60–64B</b> และบอก 3 ปีข้างหน้าจะสูงกว่าเดิม "อย่างมีนัยสำคัญ" — ตลาดอ่านเป็น margin compression หุ้นร่วง</div></div>
+<div class="tlrow"><div class="d" data-i18n="t113">16–17 ก.ค.</div><div class="t" data-i18n="t120"><b>Moonshot เปิดตัว Kimi K3</b> (2.8 ล้านล้านพารามิเตอร์ open-weight) = "DeepSeek moment รอบ 2" → ไต้หวัน −6%+, ญี่ปุ่น −4%, กลุ่มชิปแย่สุดในรอบกว่า 1 ปี — แต่ <b>HK ได้ประโยชน์</b> (Hang Seng TECH +3%, SMIC +4.5%, Alibaba +5%)</div></div>
+<div class="tlrow"><div class="d" data-i18n="t114">18 ก.ค.</div><div class="t" data-i18n="t121"><b>crack spread สหรัฐทำ record &gt;$60/บาร์เรล</b> — margin เบนซิน +60% จากต้น มิ.ย. เป็น &gt;$56, เบนซินปลีกแตะ $4.00/แกลลอน</div></div>
+<div class="tlrow"><div class="d" data-i18n="t115">22–23 ก.ค.</div><div class="t" data-i18n="t122"><b>Houthi ปิดล้อมทะเลแดง Brent ทะลุ $100</b> ครั้งแรกตั้งแต่ พ.ค. · <b>Alphabet ขึ้น capex เป็น $195–205B หุ้น −5%</b>, Tesla capex +142% หุ้น −10%</div></div>
+</div>
+<div class="watch">
+<div class="wc" data-i18n="t123"><b>FOMC 28–29 ก.ค.</b>ถ้า signal เดือน ก.ย. แรงขึ้น = ต่ออายุธีม value/แบงก์ และกดทองต่อ</div>
+<div class="wc" data-i18n="t124"><b>งบ Meta / Microsoft / Amazon</b>ตัวตัดสินว่า capex rollover เป็นของจริง หรือแค่ชะลอการเติบโต</div>
+<div class="wc" data-i18n="t125"><b>ฮอร์มุซ / ทะเลแดง</b>Goldman ชี้ $120 Brent เป็นไปได้ = เงินเฟ้อรอบใหม่ + กดท่องเที่ยวไทย (ถ้า &gt;$130 นักท่องเที่ยวอาจเหลือ 25.2 ล้านคน)</div>
+<div class="wc" data-i18n="t126"><b>ช่อง Weakening</b>Taiwan/Nasdaq/Japan จะไหลลง Lagging (ยืนยัน bear rotation) หรือเด้งกลับ Leading</div>
+</div>
+<footer>
+<p data-i18n="t131"><b>วิธีคำนวณ:</b> rel 3M = ผลตอบแทน sector 3 เดือน − ผลตอบแทนดัชนี 3 เดือน (rel 1M เช่นกันสำหรับ 1 เดือน). Quadrant: rel3M≥0 &amp; rel1M≥0 = Leading; rel3M&lt;0 &amp; rel1M≥0 = Improving; rel3M≥0 &amp; rel1M&lt;0 = Weakening; rel3M&lt;0 &amp; rel1M&lt;0 = Lagging. ระดับตลาดเทียบค่าเฉลี่ยถ่วงน้ำหนักเท่ากันของ 4 ดัชนี.</p>
+<div class="disc" data-i18n="t133"><b>ข้อจำกัด/หมายเหตุ:</b> Sector (SET · HK · จีน A) + US 126 sub-industries = <b>Bloomberg official indices</b>, trailing 1M/3M ณ <b>24 ก.ค. 2026</b> (สกุลท้องถิ่น, total return). ระดับตลาด 14 ตลาด = <b>ETF สกุล USD</b> ณ 24 ก.ค. (price return) จึงรวมผลค่าเงิน — คนละฐานกับ section 02–03 โดยเจตนา. HK internet เช่น Alibaba/Meituan ถูกจัดอยู่ใน Consumer Discretionary. ข่าวใน section 06 อ้างอิงรายงานสาธารณะ (Reuters · Bloomberg · CNBC · Bangkok Post · LSEG) ผ่าน LinqAlpha. เป็นการอ่านข้อมูลเชิงสถิติ <b>ไม่ใช่คำแนะนำการลงทุน</b>.</div>
+<p data-i18n="t132" style="margin-top:12px"><b>วิธีอ่านหาง:</b> แต่ละจุดคือตำแหน่งของตลาดในรอบข้อมูลนั้น คำนวณเทียบค่าเฉลี่ย 14 ตลาด <b>ของรอบนั้นเอง</b> (ค่าเฉลี่ยเปลี่ยนทุกรอบ: +11.3% → +7.3% → −0.2%) หางจึงสะท้อนการเคลื่อนที่ในเชิงเปรียบเทียบ ไม่ใช่ผลตอบแทนดิบ · ความยาวหาง = ขนาดการเปลี่ยนแปลงเชิงเปรียบเทียบ, ทิศทาง = โมเมนตัม</p>
+<div class="disc" data-i18n="t134"><b>ข้อจำกัดสำคัญ (ราย sector):</b> หาง sector ใช้ดัชนีกลุ่มของ Bloomberg สกุลท้องถิ่น แต่ <b>ฐานผลตอบแทนไม่เหมือนกันทุกจุด</b> — 30 มิ.ย. และ 8 ก.ค. เป็น <b>price return</b> ส่วน 24 ก.ค. เป็น <b>total return</b> (รวมปันผล) ส่วนต่างในกรอบ 1–3 เดือนมีไม่มาก แต่กลุ่มปันผลสูง (ธนาคาร · REITs · สื่อสาร) จะถูกยกขึ้นเล็กน้อยที่จุดสุดท้าย จึงควรอ่านทิศทางของหาง มากกว่าระยะทางแบบเป๊ะ ๆ<br/><br/><b>ข้อจำกัด (ระดับตลาด):</b> ใช้ ETF จดทะเบียนสหรัฐเป็นตัวแทนแต่ละตลาด (price return, สกุล USD จึงรวมผลค่าเงิน) · วันอ้างอิงแต่ละรอบ: 30 มิ.ย. (1M 29 พ.ค. / 3M 30 มี.ค.) · 7 ก.ค. (8 มิ.ย. / 7 เม.ย.) · 24 ก.ค. (24 มิ.ย. / 24 เม.ย.) · สามจุดยังเป็นตัวอย่างน้อย — หาง RRG มาตรฐานมักใช้ 8–12 จุดรายสัปดาห์ จึงควรอ่านเป็นทิศทางกว้าง ไม่ใช่รูปแบบละเอียด · เป็นการอ่านข้อมูลเชิงสถิติ <b>ไม่ใช่คำแนะนำการลงทุน</b>.</div>
+</footer>
+</div>
+<script>
+const EN={"t0": "Where is money rotating — market level across 14 global indices → sectors in 3 markets (Thailand / Hong Kong / China A) → 126 US sub-industries. X-axis = relative 3-month return, Y-axis = relative 1-month return (vs each group's own benchmark, local currency).", "t1": "All data as of <b>24 Jul 2026</b> · Market level: 14 ETFs (USD) · Sectors: SET/HK/China A (LCL) · US: 126 sub-industries", "t2": "<span class=\"dotchip\" style=\"background:var(--lead)\"></span><b>Leading</b> ahead on both", "t3": "<span class=\"dotchip\" style=\"background:var(--impr)\"></span><b>Improving</b> money turning in", "t4": "<span class=\"dotchip\" style=\"background:var(--weak)\"></span><b>Weakening</b> was leading, fading", "t5": "<span class=\"dotchip\" style=\"background:var(--lag)\"></span><b>Lagging</b> behind on both", "t6": "· hover any dot for the full numbers", "t7": "<b>01</b>Market level", "t8": "<b>02</b>Market tails", "t9": "<b>03</b>What tails say", "t10": "<b>04</b>Sectors", "t11": "<b>05</b>SET tails", "t12": "<b>06</b>HK·China tails", "t13": "<b>07</b>Sector journeys", "t14": "<b>09</b>US tails", "t15": "<b>10</b>Threads", "t16": "<b>11</b>Tables", "t17": "<b>12</b>Macro drivers", "t18": "Market level — 14 global markets", "t19": "Market tails — path across 3 snapshots", "t20": "What the market tails reveal", "t21": "Sector RRG — 3 markets", "t22": "Sector tails — 🇹🇭 SET", "t23": "Sector tails — 🇭🇰 HK · 🇨🇳 China A", "t24": "What the sector tails reveal", "t25": "🇺🇸 US deep dive — 126 sub-industries", "t26": "US sub-industry tails", "t27": "Threads running through every market", "t28": "Data tables", "t29": "Macro drivers — why this rotation", "t30": "14 markets · full range · Taiwan travelled furthest", "t31": "zoom · rel3M −16…+16 · tails outside the frame are clipped at the edge", "t32": "vs SET · benchmark 3M +9.8% → +6.1% → +11.9% · labels on the 12 furthest-travelled sectors", "t33": "vs SPX · benchmark 3M +18.1% → +3.6% · labels on the 18 furthest-travelled groups", "t34": "💱 <b>Market level in USD</b> (24 Jul): the world cooled to almost flat (avg 3M −0.2%). <b>Growth leaders keep rolling over</b> — Taiwan/Nasdaq/Japan fell into Weakening; <b>Value + SE Asia lead instead</b> (Singapore/Dow/Thailand/US/Europe); HK/Indonesia/Malaysia bouncing (Improving) · <b>section 02 = sectors in local currency</b>", "t35": "⚠️ <b>Market keeps cooling:</b> S&amp;P 500 3M +3.6% (from +13.4% on 8 Jul), tech/AI rolling over hard — Semicap 1M −16.6%!, Semis/Electronic Comp/IT Consulting weak. Leaders: Oil&amp;Gas Refining/Healthcare Srvc/Comp&amp;Elec Rtl/Pharma. <b>All 126 groups</b>", "t36": "⚠️ <b>Unlike the other panels: 2 points, not 3</b> — the 8 Jul US dataset was not retained, so these tails run <b>30 Jun → 24 Jul</b> (about 8 weeks) and show only the <b>40 furthest-travelled groups</b> of the 124 matched by name — the full 126 snapshot is in section 08", "t37": "🔄 <b>The thread running through every market:</b> foreigners sold a net <b>$137.4bn of EM Asia equities in H1 2026</b> — the fastest on data going back to 2010 (Korea −$70.8bn, Taiwan −$29.6bn). The reason is not bearishness but <b>concentration risk</b>: untrimmed, Samsung+SK Hynix would swell from 8.6% to 21.5% of MSCI Asia ex-Japan, breaching institutional limits → money was pushed toward cheap laggards = <b>Thailand · Singapore · Indonesia</b>", "t38": "Zoomed to the middle cluster — <b style=\"color:var(--ink)\">Taiwan (+11%)</b> / <b style=\"color:var(--ink)\">Indonesia (−20%)</b> / <b style=\"color:var(--ink)\">Vietnam (−13%)</b> sit at the edges", "t39": "Full scale shows <b style=\"color:var(--ink)\">Taiwan</b> falling from rel3M +46 to +11 in three weeks and <b style=\"color:var(--ink)\">Indonesia</b> climbing from −38 to −20 — but the middle crowds together, so see the zoom below", "t40": "Clipped at ±16 to open up the cluster around zero — Taiwan and Indonesia enter from the edges", "t41": "<b style=\"color:var(--ink)\">18 of 27 sectors</b> changed quadrant at least once — ETRON walked from rel3M +12 down to −12 while BANK climbed from +4 to +18", "t42": "China A <b style=\"color:var(--ink)\">moved all 10 groups</b> — the most violent rotation of the three markets · HK moved 7 of 12", "t43": "<b style=\"color:var(--ink)\">Semicap</b> travelled further than anything else on this dashboard — rel3M <b style=\"color:var(--ink)\">+96 → +15</b> · the overall drift is clear: former Lagging/Improving groups moved up-right (energy · food · insurance) while the chip cluster moved down-left", "t44": "<b style=\"color:var(--ink)\">Market-level journey table</b> — sorted by distance travelled across the three snapshots", "t45": "<span class=\"em\">Singapore</span> (+10%), <span class=\"em\">Dow · Thailand · US · Europe</span> — value/defensive + SE Asia lead instead of growth", "t46": "<span class=\"em\">Taiwan · Nasdaq · Japan</span> — AI/tech leaders, trend still positive but momentum has flipped = rotation-out continues", "t47": "Bouncing: <span class=\"em\">HK · Indonesia · Malaysia</span> (1M back positive) · Weak: <span class=\"em\">China A · India · Vietnam</span>", "t48": "🇹🇼 Taiwan — a sustained decline, not a stumble", "t49": "🇨🇳 China A — a full cycle in three points", "t50": "🇹🇭 Thailand — jumping a quadrant", "t51": "🇸🇬 Singapore — textbook rotation-in", "t52": "🇮🇳 India — an Improving signal that failed", "t53": "🇺🇸 Dow — the only market that never moved", "t54": "🇨🇳 China Info Tech — a leader dissolving", "t55": "🇹🇭 ETRON — how Weakening tends to end", "t56": "🇹🇭 BANK — a leader still gaining ground", "t57": "⛽ Energy flipped in all three markets at once", "t58": "🇭🇰 HK Info Tech — losing because peers ran", "t59": "🛡️ Chinese defensives take over", "t60": "🔬 The chip cluster splits — trend intact, momentum broken", "t61": "🛢️ Refining is the real leader", "t62": "💊 Healthcare is broad and fundamentally backed", "t63": "📉 The losers: appliances · legacy media · gold", "t64": "💥 Chips are the biggest reversal", "t65": "🛢️ Oil flips to the other side", "t66": "↗️ The overall drift is upward", "t67": "⚡ Heavy Electrical — collateral damage of the AI theme", "t68": "🔌 AI/chips rolled over worldwide at once", "t69": "⛽ Energy is the common theme across markets", "t70": "🏦 Banks lead almost everywhere — the higher-for-longer theme", "t71": "💊 Healthcare rotated in across several markets", "t72": "🇭🇰 HK bounced hard, but tech did not follow", "t73": "🇨🇳 China rotates into cash-generative groups", "t74": "A long tail pointing down-left across both legs (<span class=\"em\">+46 → +34 → +11</span> on the x-axis). Sitting in Weakening twice without the distance shrinking is what genuine rotation-out looks like — not a one-step pause.", "t75": "<span class=\"em\">Leading → Weakening → Lagging</span> is the textbook clockwise path, and the clearest illustration of why Weakening is a warning rather than a rest.", "t76": "Two rounds in Lagging, then <span class=\"em\">straight into Leading</span> without passing through Improving. That kind of jump usually reflects fast inflows rather than a gradual recovery — consistent with the mechanical-flows picture, and the reason its durability needs watching.", "t77": "<span class=\"em\">Improving → Leading → Leading</span> — entered the lead and stayed, with a tail still pointing up-right. The most persistent pattern on this board.", "t78": "<span class=\"em\">Improving → Improving → Lagging</span> is a reminder that Improving guarantees nothing; roughly one in three such signals falls back. Scale in, do not commit at once.", "t79": "<span class=\"em\">Leading in all three rounds</span> while 12 of 14 markets changed quadrant at least once — that stillness is itself the information: value/dividend worked as a hiding place throughout.", "t80": "rel3M <span class=\"em\">+67 → +13</span> in six weeks and the quadrant flipped to Weakening. The longest tail on any panel — the same picture as Taiwan/Nasdaq, only more violent.", "t81": "Thai electronics walked <span class=\"em\">Weakening → Weakening → Lagging</span> (rel3M +12 → −12), confirming that repeated Weakening without the tail turning back tends to end in Lagging.", "t82": "Leading in all three rounds with rel3M <span class=\"em\">climbing +4 → +9 → +18</span> — a tail pointing steadily right, meaning the higher-rate theme still has force, unlike the tech leaders whose tails bent back.", "t83": "SETENERG <span class=\"em\">Lagging → Lagging → Leading</span>, with HK Energy and CSI300 Energy both entering <span class=\"em\">Improving</span> — Hormuz transmitted into every market on the same beat.", "t84": "<span class=\"em\">Leading → Leading → Lagging</span>, even though Kimi K3 was good news for China. The reason: HSCI bounced +8.7% in a month while HSCIIT rose only +2% — the bar rose until a modest gain became underperformance.", "t85": "Utilities <span class=\"em\">Lagging → Lagging → Leading</span> with Staples and Health Care entering Improving — as the AI theme faded, Chinese money rotated into cash-flow groups, exactly as in developed markets.", "t86": "<span class=\"em\">Semicap</span> 3M +18.2% but 1M <span class=\"em\">−16.6%</span> (Weakening) · <span class=\"em\">Electronic Comp</span> 1M −20.3% (Lagging) · Semiconductors +3.3%/−0.9% · Elec Manu Svc and IT Consulting both weak — the whole value chain was sold, not just chipmakers.", "t87": "<span class=\"em\">Oil &amp; Gas Refining +30.3%</span> (3M) tops the board · Integrated Oil 1M +14.6% · Oil &amp; Gas E&amp;P 1M +9.9% — the bottleneck is refining capacity, not crude (crack spreads hit a record).", "t88": "Healthcare Services <span class=\"em\">+22.3%</span>, Managed Health Care +21.6%, Pharma +21.6%, HCare REITs +21.1%, Biotech +16.0%, Life &amp; Health Insurance +17.4% — not merely defensive: the 2027 Medicare Advantage rate of about +5% underpins it.", "t89": "Household Appliances <span class=\"em\">−33.2%</span>, Cable &amp; Satellite −28.7%, Gold −19.5%, Movies &amp; Entertainment −15.1%, Auto Retail −14.8%, Automobile Mfrs −14.6% (3M) — groups squeezed by both high rates and slowing demand.", "t90": "<span class=\"em\">Semicap</span> Leading → Weakening (rel3M +96 → +15), <span class=\"em\">Electronic Components</span> Leading → Lagging (+51 → −9), <span class=\"em\">Semiconductors</span> Weakening → Lagging — the whole cluster moved down-left together, not one group alone.", "t91": "<span class=\"em\">Integrated Oil</span> Lagging → Leading (−39 → +3) and <span class=\"em\">Oil &amp; Gas Refining</span> Improving → Leading (−16 → +27) — two discarded groups became leaders within two months, matching the Hormuz timeline in section 12.", "t92": "Among the 40 furthest-travelled groups, <span class=\"em\">22 moved to a better quadrant</span> (Improving→Leading 9 · Lagging→Improving 8 · Lagging→Leading 5) against 11 that deteriorated — leadership is broadening away from a single theme.", "t93": "Leading → Lagging (rel3M +11 → −13). Heavy electrical equipment, which had run on the data-centre power theme, was sold alongside the chips — the market cut the entire value chain, not just chipmakers.", "t94": "At market level <span class=\"em\">Taiwan · Nasdaq · Japan</span> entered Weakening together · at sector level: <span class=\"em\">CSI300 Info Tech 1M −17.4%</span> (while 3M is still +11.7%), US Semicap 1M −16.6%, SET Electronics dropped to Lagging — the same theme surfacing in all four markets on the same beat.", "t95": "<span class=\"em\">SETENERG</span> 3M +15.0% / 1M +14.0% into Leading · <span class=\"em\">HK Energy</span> 1M +11.9% and <span class=\"em\">CSI300 Energy</span> 1M +12.8%, both into Improving · US Refining +30.3% — Hormuz transmitted everywhere at once.", "t96": "<span class=\"em\">SETBANK 3M +29.5%</span> tops the SET · <span class=\"em\">HK Financials</span> is the only Leading group in Hong Kong · CSI300 Financials also Leading · US Diversified Banks +12.6% — higher-for-longer lands the same way in every market.", "t97": "The US leads with Healthcare Services/Managed HC/Pharma · <span class=\"em\">HK Health Care 1M +16.2%</span> (Improving) · <span class=\"em\">CSI300 Health Care</span> into Leading — a global rotation into defensive growth, not a US-only story.", "t98": "HSCI rose +8.7% in a month but <span class=\"em\">HSCIIT gained only +2.0%</span>, dropping it to Lagging even though Kimi K3 was good news — the bounce was led by Materials/Health Care/Cons Disc/Financials, i.e. value-led rather than tech-led.", "t99": "<span class=\"em\">Utilities</span> moved up to Leading · Staples and Health Care entered Improving · while <span class=\"em\">Info Tech and Telecom Services</span> fell to Weakening — the same pattern as developed markets, one beat later.", "t100": "Fed \"regime change\" under Kevin Warsh", "t101": "US–Iran war + the Strait of Hormuz", "t102": "A crisis of faith in AI capex", "t103": "The 16–17 Jun meeting held rates at 3.50–3.75%, but <b style=\"color:var(--ink)\">9 of 18 officials pencilled in a hike</b> this year (2026 median: 3.4%→3.8%, PCE 2.7%→3.6%) and forward guidance was scrapped. CME puts September hike odds at roughly 50–62%.", "t104": "Ceasefire 17 Jun → <b style=\"color:var(--ink)\">8 Jul, the deal declared \"over\"</b> → 20 Jul, Hormuz closed → 22–23 Jul, Houthi blockade of the Red Sea and <b style=\"color:var(--ink)\">Brent above $100</b>. The real bottleneck is refining: the US 3-2-1 crack spread hit a record &gt;$60/bbl.", "t105": "Q2 was a blow-off (SOX +88%, its best quarter ever) then turned within a month — Meta selling surplus capacity, TSMC raising capex to $60–64B, <b style=\"color:var(--ink)\">Moonshot Kimi K3</b> launching, Alphabet/Tesla raising capex and their shares falling.", "t106": "<b>EFFECT ON ROTATION</b>Higher-for-longer → banks lead every market (SETBANK +29%, Singapore banks at record highs, US Div Banks +12.6%) · long-duration tech de-rates · <span style=\"color:var(--lag)\">gold −19.5%</span>", "t107": "<b>EFFECT ON ROTATION</b>Oil&amp;Gas Refining <span style=\"color:var(--lead)\">+30.3%</span> tops the US · Integrated Oil 1M +14.6% · SETENERG +15% · HK/CSI300 Energy 1M +12% · pushed US CPI to 4.2% (May) before cooling to 3.8%", "t108": "<b>EFFECT ON ROTATION</b><span style=\"color:var(--weak)\">Taiwan · Nasdaq · Japan → Weakening</span> · Semicap 1M −16.6% · Electronic Comp 1M −20.3% · CSI300 Info Tech 1M −17.4% · Software still Lagging", "t109": "1–2 Jul", "t110": "8 Jul", "t111": "14–15 Jul", "t112": "16 Jul", "t113": "16–17 Jul", "t114": "18 Jul", "t115": "22–23 Jul", "t116": "<b>Meta to sell surplus data-centre capacity</b> — the market concluded compute is no longer scarce; SOX −6.3% in a day (KLA −12%, Lam −9.7%, AMAT −10%)", "t117": "<b>Trump declares the Iran deal \"over\"</b> — Brent +6% in a day · the same day, Chinese stocks in Hong Kong jumped the most in 14 months as money rotated into the less crowded corners of global markets", "t118": "Warsh testifies to Congress, insisting inflation will not be left elevated · <b>June CPI cooler than expected</b> (4.2%→3.8%) · China reports <b>the slowest Q2 GDP growth since 2022</b>, below forecast", "t119": "<b>TSMC beats but lifts capex from $52–56B to $60–64B</b> and says the next three years will run significantly higher — the market read it as margin compression and the stock fell", "t120": "<b>Moonshot launches Kimi K3</b> (2.8 trillion parameters, open-weight) = a second \"DeepSeek moment\" → Taiwan −6%+, Japan −4%, the worst week for chip stocks in over a year — but <b>Hong Kong benefited</b> (Hang Seng TECH +3%, SMIC +4.5%, Alibaba +5%)", "t121": "<b>US crack spread hits a record &gt;$60/bbl</b> — gasoline margins +60% since early June to &gt;$56, retail petrol touching $4.00/gallon", "t122": "<b>Houthi blockade of the Red Sea, Brent above $100</b> for the first time since May · <b>Alphabet lifts capex to $195–205B, shares −5%</b>, Tesla capex +142%, shares −10%", "t123": "<b>FOMC 28–29 Jul</b>a stronger September signal extends the value/banks theme and keeps pressure on gold", "t124": "<b>Meta / Microsoft / Amazon earnings</b>the test of whether the capex rollover is real or just slower growth", "t125": "<b>Hormuz / Red Sea</b>Goldman sees $120 Brent as possible = a fresh inflation round, and pressure on Thai tourism (above $130, arrivals could fall to 25.2m)", "t126": "<b>The Weakening quadrant</b>whether Taiwan/Nasdaq/Japan slide into Lagging (confirming bear rotation) or rebound to Leading", "t127": "Market", "t128": "Path: 30 Jun → 8 Jul → 24 Jul", "t129": "rel3M travelled", "t130": "Total distance", "t131": "<b>How it is calculated:</b> rel 3M = sector 3-month return − index 3-month return (same for rel 1M over one month). Quadrant: rel3M≥0 &amp; rel1M≥0 = Leading; rel3M&lt;0 &amp; rel1M≥0 = Improving; rel3M≥0 &amp; rel1M&lt;0 = Weakening; rel3M&lt;0 &amp; rel1M&lt;0 = Lagging. Market level is measured against the equal-weight average of the indices in view.", "t132": "<b>How to read the tails:</b> each dot is that market’s position in that snapshot, measured against the 14-market average <b>of that snapshot itself</b> (the average changes every round: +11.3% → +7.3% → −0.2%). Tails therefore show movement in relative terms, not raw returns · tail length = size of the relative change, direction = momentum", "t133": "<b>Limitations / notes:</b> Sectors (SET · HK · China A) and the 126 US sub-industries are <b>Bloomberg official indices</b>, trailing 1M/3M as of <b>24 Jul 2026</b> (local currency, total return). The 14-market level uses <b>USD ETFs</b> as of 24 Jul (price return) and therefore includes currency effects — deliberately a different basis from sections 04–08. HK internet names such as Alibaba/Meituan sit in Consumer Discretionary. News in section 12 draws on public reporting (Reuters · Bloomberg · CNBC · Bangkok Post · LSEG) via LinqAlpha. This is a statistical reading of group rotation, <b>not investment advice</b>.", "t134": "<b>Important limitation (sector tails):</b> sector tails use Bloomberg local-currency sector indices, but <b>the return basis is not identical at every point</b> — 30 Jun and 8 Jul are <b>price return</b> while 24 Jul is <b>total return</b> (dividends included). The gap over 1–3 months is small, but high-yield groups (banks · REITs · telecoms) are lifted slightly at the final point, so read tail direction rather than exact distance.<br/><br/><b>Limitation (market level):</b> US-listed ETFs stand in for each market (price return, USD, so currency is included) · reference dates per snapshot: 30 Jun (1M 29 May / 3M 30 Mar) · 7 Jul (8 Jun / 7 Apr) · 24 Jul (24 Jun / 24 Apr) · three points is still a small sample — a standard RRG tail uses 8–12 weekly points — so read broad direction, not fine pattern · a statistical reading of group rotation, <b>not investment advice</b>.", "t135": "126 groups measured against SPX (3M +3.6% / 1M +0.9%) — the much lower bar mechanically widens the Leading quadrant; it does not mean the market got stronger · hover any dot for names and numbers · points beyond the frame are clipped at the edge", "t136": "<span class=\"qd\" style=\"background:var(--lead)\"></span>US LEADING — beating SPX +3.6% (top 14)", "t137": "Big picture", "t138": "<b style=\"color:var(--lead)\">Thailand</b> is where the rotation landed (Lagging → Leading), led by banks/finance/machinery · <b style=\"color:var(--impr)\">Hong Kong</b> bounced hard over the month (+8.7%) but led by value, not tech · <b style=\"color:var(--lag)\">China A</b> flipped from a chip bull market to a defensive rotation (Utilities/Financials/Health Care leading while Info Tech rolls over) · <b style=\"color:var(--lead)\">US</b> has a far lower bar (3M +3.6%) and leadership has passed to refining and healthcare. The global common threads: <b>AI/chips rolling over everywhere at once</b> and <b>energy strong across the board</b>."};
+const READ_EN={"แบงก์/การเงิน/เครื่องจักร/พลังงานนำ; ประกัน+ก่อสร้างม้วน (Weakening)": "Banks/finance/machinery/energy lead; insurance + construction rolling over (Weakening)", "เด้งแรงรอบเดือน (bar 1M สูง)—Financials นำเดี่ยว, Materials/Healthcare/Cons Disc improving": "Sharp 1-month bounce (high bar) — Financials the sole leader; Materials/Healthcare/Cons Disc improving", "Info Tech ม้วนแรง (3M +12 แต่ 1M −17); Utilities/Financials/Health Care นำ": "Info Tech rolling over hard (3M +12 but 1M −17); Utilities/Financials/Health Care lead"};
+function clamp(v,lo,hi){return v<lo?lo:v>hi?hi:v;}
+let LANG='th'; const TH={};
+document.querySelectorAll('[data-i18n]').forEach(e=>{TH[e.dataset.i18n]=e.innerHTML;});
+function applyText(){
+  document.querySelectorAll('[data-i18n]').forEach(e=>{
+    const k=e.dataset.i18n;
+    const v = LANG==='en' ? (EN[k]!==undefined?EN[k]:TH[k]) : TH[k];
+    if(v!==undefined) e.innerHTML=v;
+  });
+  document.documentElement.lang = LANG==='en' ? 'en' : 'th';
+}
+function clearAll(){
+  ['mkt','full','zoom','setT','hkT','cnT','usbig','usT'].forEach(id=>{const e=document.getElementById(id); if(e) e.innerHTML='';});
+  ['panels','tbody','jt','utL','utWG'].forEach(id=>{const e=document.getElementById(id); if(e) e.innerHTML='';});
+}
+function setLang(l){
+  LANG=l;
+  document.getElementById('btnTH').classList.toggle('on', l==='th');
+  document.getElementById('btnEN').classList.toggle('on', l==='en');
+  applyText(); renderAll();
+}
+
+
+const Q={Leading:{c:'var(--lead)',bg:'var(--leadbg)',hex:'#33B884'},Improving:{c:'var(--impr)',bg:'var(--imprbg)',hex:'#3E8EDE'},
+  Weakening:{c:'var(--weak)',bg:'var(--weakbg)',hex:'#E0A92E'},Lagging:{c:'var(--lag)',bg:'var(--lagbg)',hex:'#DA5750'}};
+function quad(x,y){return x>=0&&y>=0?'Leading':x<0&&y>=0?'Improving':x>=0&&y<0?'Weakening':'Lagging';}
+function fmt(v){return (v>0?'+':'')+v.toFixed(1);}
+
+const MKT=[
+{lab:"S'pore",nm:"Singapore",x:10.2,y:6.9,r3:10.0,r1:6.8},
+{lab:"Dow",nm:"Dow Jones",x:5.6,y:0.2,r3:5.4,r1:0.1},
+{lab:"Thailand",nm:"Thailand",x:5.5,y:5.3,r3:5.3,r1:5.2},
+{lab:"US",nm:"US (S&P 500)",x:3.7,y:0.9,r3:3.5,r1:0.8},
+{lab:"Europe",nm:"Europe",x:1.8,y:1.8,r3:1.6,r1:1.7},
+{lab:"HK",nm:"Hong Kong",x:-3.3,y:6.7,r3:-3.5,r1:6.6},
+{lab:"Malaysia",nm:"Malaysia",x:-5.8,y:2.6,r3:-6.0,r1:2.5},
+{lab:"Indonesia −20%",nm:"Indonesia",x:-20.0,y:4.5,r3:-20.2,r1:4.4},
+{lab:"Taiwan +11%",nm:"Taiwan",x:11.5,y:-6.3,r3:11.3,r1:-6.4},
+{lab:"Japan",nm:"Japan",x:4.7,y:-1.4,r3:4.5,r1:-1.5},
+{lab:"Nasdaq",nm:"Nasdaq 100",x:3.3,y:-3.6,r3:3.1,r1:-3.7},
+{lab:"China A",nm:"China A",x:-1.3,y:-4.1,r3:-1.5,r1:-4.2},
+{lab:"India",nm:"India",x:-3.0,y:-3.1,r3:-3.1,r1:-3.2},
+{lab:"Vietnam −13%",nm:"Vietnam",x:-12.8,y:-10.3,r3:-13.0,r1:-10.4}
+];
+
+const SECTORS=[
+ {flag:'🇹🇭',name:'Thailand (SET)',bench:'vs SET · 3M +11.9 / 1M +6.6',read:'แบงก์/การเงิน/เครื่องจักร/พลังงานนำ; ประกัน+ก่อสร้างม้วน (Weakening)',
+  pts:[
+   {tk:"IMM",nm:"Indu Mat & Mach",x:23.8,y:2.1,r3:35.6,r1:8.7},
+   {tk:"PKG",nm:"Packaging",x:21.4,y:0.8,r3:33.2,r1:7.4},
+   {tk:"BANK",nm:"Banking",x:17.6,y:6.1,r3:29.5,r1:12.7},
+   {tk:"FIN",nm:"Finance/Sec",x:7.9,y:1.8,r3:19.7,r1:8.4},
+   {tk:"AUTO",nm:"Automotive",x:6.7,y:0.2,r3:18.5,r1:6.8},
+   {tk:"ENERG",nm:"Energy & Util",x:3.1,y:7.4,r3:15.0,r1:14.0},
+   {tk:"MEDIA",nm:"Media & Publishing",x:0.3,y:4.1,r3:12.1,r1:10.8},
+   {tk:"ICT",nm:"Info & Comm Tech",x:-4.2,y:0.6,r3:7.6,r1:7.2,nolabel:1},
+   {tk:"PETRO",nm:"Petrochem & Chem",x:-6.4,y:12.4,r3:5.4,r1:19.0},
+   {tk:"AGRI",nm:"Agri-Business",x:-7.9,y:0.5,r3:3.9,r1:7.1},
+   {tk:"CONS",nm:"Constr Services",x:16.9,y:-4.9,r3:28.7,r1:1.7},
+   {tk:"INS",nm:"Insurance",x:8.0,y:-0.5,r3:19.9,r1:6.1},
+   {tk:"TRANS",nm:"Trans & Logist",x:2.7,y:-4.2,r3:14.6,r1:2.4},
+   {tk:"CONMT",nm:"Constr Material",x:2.1,y:-1.2,r3:13.9,r1:5.4,nolabel:1},
+   {tk:"PAPER",nm:"Paper & Print",x:0.5,y:-4.1,r3:12.3,r1:2.5},
+   {tk:"FOOD",nm:"Food & Bev",x:-0.2,y:-1.0,r3:11.7,r1:5.6,nolabel:1},
+   {tk:"COM",nm:"Commerce",x:-0.7,y:-4.0,r3:11.2,r1:2.6},
+   {tk:"PROP",nm:"Property Dev",x:-0.9,y:-5.0,r3:10.9,r1:1.6},
+   {tk:"PF&REIT",nm:"Prop Fund & REITs",x:-1.7,y:-3.1,r3:10.2,r1:3.6},
+   {tk:"TOUR",nm:"Tourism & Leisure",x:-2.8,y:-12.9,r3:9.0,r1:-6.3},
+   {tk:"PERS",nm:"Pers Prod & Pharm",x:-3.0,y:-0.8,r3:8.9,r1:5.9,nolabel:1},
+   {tk:"STEEL",nm:"Steel",x:-7.1,y:-1.2,r3:4.8,r1:5.4},
+   {tk:"HOME",nm:"Home & Office",x:-8.4,y:-5.7,r3:3.5,r1:0.9},
+   {tk:"HELTH",nm:"Health Care Svc",x:-8.6,y:-7.8,r3:3.2,r1:-1.2},
+   {tk:"FASH",nm:"Fashion",x:-10.7,y:-3.7,r3:1.1,r1:2.9},
+   {tk:"ETRON",nm:"Electronics",x:-11.7,y:-5.4,r3:0.2,r1:1.2},
+   {tk:"PROF",nm:"Professional Svc",x:-12.8,y:-6.1,r3:-1.0,r1:0.6}
+  ]},
+ {flag:'🇭🇰',name:'Hong Kong (HSCI)',bench:'vs HSCI · 3M −4.73 / 1M +8.7',read:'เด้งแรงรอบเดือน (bar 1M สูง)—Financials นำเดี่ยว, Materials/Healthcare/Cons Disc improving',
+  pts:[
+   {tk:"FIN",nm:"Financials",x:9.8,y:1.0,r3:5.1,r1:9.7},
+   {tk:"HLTH",nm:"Health Care",x:-0.3,y:7.5,r3:-5.0,r1:16.2},
+   {tk:"DISC",nm:"Cons Discretionary",x:-6.3,y:7.1,r3:-11.1,r1:15.8},
+   {tk:"ENE",nm:"Energy",x:-7.1,y:3.2,r3:-11.8,r1:11.9},
+   {tk:"MAT",nm:"Materials",x:-12.3,y:5.5,r3:-17.0,r1:14.2},
+   {tk:"CONG",nm:"Conglomerates",x:12.8,y:-1.1,r3:8.1,r1:7.6},
+   {tk:"TEL",nm:"Telecom",x:2.3,y:-2.8,r3:-2.5,r1:5.9},
+   {tk:"UTIL",nm:"Utilities",x:0.0,y:-2.6,r3:-4.7,r1:6.0},
+   {tk:"PROP",nm:"Prop & Constr",x:-1.7,y:-2.3,r3:-6.4,r1:6.4},
+   {tk:"IT",nm:"Info Tech",x:-3.0,y:-6.7,r3:-7.8,r1:2.0},
+   {tk:"IND",nm:"Industrials",x:-3.8,y:-16.8,r3:-8.5,r1:-8.2},
+   {tk:"STPL",nm:"Cons Staples",x:-4.6,y:-4.7,r3:-9.3,r1:4.0}
+  ]},
+ {flag:'🇨🇳',name:'China A-share',bench:'vs CSI 300 · 3M −1.45 / 1M −4.0',read:'Info Tech ม้วนแรง (3M +12 แต่ 1M −17); Utilities/Financials/Health Care นำ',
+  pts:[
+   {tk:"UTIL",nm:"Utilities",x:5.6,y:12.3,r3:4.2,r1:8.3},
+   {tk:"FIN",nm:"Financials",x:2.8,y:10.8,r3:1.4,r1:6.8},
+   {tk:"HLTH",nm:"Health Care",x:2.3,y:13.6,r3:0.9,r1:9.6},
+   {tk:"ENE",nm:"Energy",x:-3.4,y:16.8,r3:-4.8,r1:12.8},
+   {tk:"DISC",nm:"Cons Discretionary",x:-4.9,y:12.0,r3:-6.3,r1:8.0},
+   {tk:"STPL",nm:"Cons Staples",x:-6.2,y:14.5,r3:-7.6,r1:10.5},
+   {tk:"IND",nm:"Industrials",x:-12.2,y:0.8,r3:-13.6,r1:-3.2},
+   {tk:"MAT",nm:"Materials",x:-14.4,y:0.9,r3:-15.9,r1:-3.1},
+   {tk:"IT",nm:"Info Tech",x:13.2,y:-13.4,r3:11.7,r1:-17.4},
+   {tk:"TELC",nm:"Telecom Services",x:12.8,y:-10.1,r3:11.4,r1:-14.1}
+  ]},
+];
+
+const SVGNS='http://www.w3.org/2000/svg';
+function el(n,a){const e=document.createElementNS(SVGNS,n);for(const k in a)e.setAttribute(k,a[k]);return e;}
+function drawRRG(svg,pts,opts){
+  opts=opts||{}; const VB=svg.viewBox.baseVal,W=VB.width,H=VB.height;
+  const m={l:42,r:14,t:20,b:34}, pw=W-m.l-m.r, ph=H-m.t-m.b, cx=m.l+pw/2, cy=m.t+ph/2;
+  let xmax=0,ymax=0; pts.forEach(p=>{xmax=Math.max(xmax,Math.abs(p.x));ymax=Math.max(ymax,Math.abs(p.y));});
+  xmax=xmax*1.16||1; ymax=ymax*1.16||1;
+  const X=v=>cx+(v/xmax)*(pw/2), Y=v=>cy-(v/ymax)*(ph/2);
+  // quadrant backgrounds
+  svg.appendChild(el('rect',{x:cx,y:m.t,width:m.l+pw-cx,height:ph/2,fill:Q.Leading.bg}));
+  svg.appendChild(el('rect',{x:m.l,y:m.t,width:cx-m.l,height:ph/2,fill:Q.Improving.bg}));
+  svg.appendChild(el('rect',{x:cx,y:cy,width:m.l+pw-cx,height:ph/2,fill:Q.Weakening.bg}));
+  svg.appendChild(el('rect',{x:m.l,y:cy,width:cx-m.l,height:ph/2,fill:Q.Lagging.bg}));
+  svg.appendChild(el('rect',{x:m.l,y:m.t,width:pw,height:ph,fill:'none',stroke:'var(--line)','stroke-width':1,rx:4}));
+  svg.appendChild(el('line',{x1:m.l,y1:cy,x2:m.l+pw,y2:cy,class:'zeroln'}));
+  svg.appendChild(el('line',{x1:cx,y1:m.t,x2:cx,y2:m.t+ph,class:'zeroln'}));
+  const qc=[['LEADING',m.l+pw-5,m.t+13,'end','var(--lead)'],['IMPROVING',m.l+5,m.t+13,'start','var(--impr)'],
+            ['WEAKENING',m.l+pw-5,m.t+ph-6,'end','var(--weak)'],['LAGGING',m.l+5,m.t+ph-6,'start','var(--lag)']];
+  qc.forEach(q=>{const t=el('text',{x:q[1],y:q[2],class:'qlab','text-anchor':q[3],fill:q[4],opacity:.7});t.textContent=q[0];svg.appendChild(t);});
+  const xa=el('text',{x:cx,y:H-6,class:'axcap','text-anchor':'middle'});xa.textContent='RS-Ratio  (relative 3M, %)  →';svg.appendChild(xa);
+  const ya=el('text',{x:12,y:cy,class:'axcap','text-anchor':'middle',transform:`rotate(-90 12 ${cy})`});ya.textContent='RS-Momentum (relative 1M, %)  →';svg.appendChild(ya);
+  const big=opts.big;
+  pts.forEach(p=>{
+    const q=quad(p.x,p.y),col=Q[q].c,px=X(p.x),py=Y(p.y),rad=big?7:5,g=el('g',{});
+    const c=el('circle',{cx:px,cy:py,r:rad,fill:col,stroke:'#0E1B2E','stroke-width':big?2:1.5});
+    const ti=el('title',{});ti.textContent=`${p.nm}  ·  ${q}\n3M ${fmt(p.r3)}%  |  1M ${fmt(p.r1)}%\nrel3M ${fmt(p.x)}  |  rel1M ${fmt(p.y)}`;
+    c.appendChild(ti);g.appendChild(c);
+    if(!p.nolabel){
+      let ax=px+rad+3,anchor='start'; if(px>m.l+pw-46){ax=px-rad-3;anchor='end';}
+      const t=el('text',{x:ax,y:py+3,class:big?'tkbig':'tk','text-anchor':anchor,fill:col});t.textContent=p.tk;g.appendChild(t);
+    }
+    svg.appendChild(g);
+  });
+}
+
+function drawMkt(svg,pts,R){
+  const VB=svg.viewBox.baseVal,W=VB.width,H=VB.height,m={l:56,r:22,t:26,b:42},pw=W-m.l-m.r,ph=H-m.t-m.b;
+  const X=v=>m.l+(clamp(v,R.xlo,R.xhi)-R.xlo)/(R.xhi-R.xlo)*pw,Y=v=>m.t+(R.yhi-clamp(v,R.ylo,R.yhi))/(R.yhi-R.ylo)*ph;
+  const zx=X(0),zy=Y(0);
+  svg.appendChild(el('rect',{x:zx,y:m.t,width:m.l+pw-zx,height:zy-m.t,fill:Q.Leading.bg}));
+  svg.appendChild(el('rect',{x:m.l,y:m.t,width:zx-m.l,height:zy-m.t,fill:Q.Improving.bg}));
+  svg.appendChild(el('rect',{x:zx,y:zy,width:m.l+pw-zx,height:m.t+ph-zy,fill:Q.Weakening.bg}));
+  svg.appendChild(el('rect',{x:m.l,y:zy,width:zx-m.l,height:m.t+ph-zy,fill:Q.Lagging.bg}));
+  svg.appendChild(el('rect',{x:m.l,y:m.t,width:pw,height:ph,fill:'none',stroke:'var(--line)','stroke-width':1,rx:4}));
+  svg.appendChild(el('line',{x1:m.l,y1:zy,x2:m.l+pw,y2:zy,class:'zeroln'}));
+  svg.appendChild(el('line',{x1:zx,y1:m.t,x2:zx,y2:m.t+ph,class:'zeroln'}));
+  const qc=[['LEADING',m.l+pw-8,m.t+17,'end','var(--lead)'],['IMPROVING',m.l+8,m.t+17,'start','var(--impr)'],
+            ['WEAKENING',m.l+pw-8,m.t+ph-9,'end','var(--weak)'],['LAGGING',m.l+8,m.t+ph-9,'start','var(--lag)']];
+  qc.forEach(q=>{const t=el('text',{x:q[1],y:q[2],class:'qlab','text-anchor':q[3],fill:q[4],opacity:.6});t.textContent=q[0];svg.appendChild(t);});
+  const xa=el('text',{x:m.l+pw/2,y:H-8,class:'axcap','text-anchor':'middle'});xa.textContent='RS-Ratio  (relative 3M, %)  →';svg.appendChild(xa);
+  const ya=el('text',{x:15,y:m.t+ph/2,class:'axcap','text-anchor':'middle',transform:`rotate(-90 15 ${m.t+ph/2})`});ya.textContent='RS-Momentum (relative 1M, %)  →';svg.appendChild(ya);
+  pts.forEach(p=>{const q=quad(p.x,p.y),col=Q[q].c,px=X(p.x),py=Y(p.y),g=el('g',{});
+    const c=el('circle',{cx:px,cy:py,r:7.5,fill:col,stroke:'#0E1B2E','stroke-width':2});
+    const ti=el('title',{});ti.textContent=`${p.nm} · ${q}\n3M ${fmt(p.r3)}% | 1M ${fmt(p.r1)}%\nrel3M ${fmt(p.x)} | rel1M ${fmt(p.y)}`;c.appendChild(ti);g.appendChild(c);
+    let ax=px+11,anchor='start';if(px>m.l+pw-70){ax=px-11;anchor='end';}
+    const t=el('text',{x:ax,y:py+4,class:'tkbig','text-anchor':anchor,fill:col});t.textContent=p.lab;g.appendChild(t);
+    svg.appendChild(g);});
+}
+function renderAll(){
+clearAll();
+drawMkt(document.getElementById('mkt'),MKT,{xlo:-20,xhi:22,ylo:-8,yhi:12});
+const pc=document.getElementById('panels');
+SECTORS.forEach((s,i)=>{
+  const wrap=document.createElement('div');wrap.className='panel card';
+  wrap.innerHTML=`<div class="phead"><span class="flag">${s.flag}</span><span class="pname">${s.name}</span><span class="pbench">${s.bench}</span></div>
+     <svg class="rrg" id="sec${i}" viewBox="0 0 470 360" role="img" aria-label="${s.name} RRG"></svg>
+     <div class="pread">${LANG==='en'&&READ_EN[s.read]?READ_EN[s.read]:s.read}</div>`;
+  pc.appendChild(wrap);
+  drawRRG(document.getElementById('sec'+i),s.pts,{});
+});
+const tb=document.getElementById('tbody');
+function cls(v){return v>0?'pos':v<0?'neg':'';}
+SECTORS.forEach(s=>{
+  const hr=document.createElement('tr');hr.className='mkthead';
+  hr.innerHTML=`<td colspan="6">${s.flag} ${s.name} &nbsp;·&nbsp; ${s.bench.replace('<br>',' · ')}</td>`;tb.appendChild(hr);
+  s.pts.slice().sort((a,b)=>b.x-a.x).forEach(p=>{
+    const q=quad(p.x,p.y),tr=document.createElement('tr');
+    tr.innerHTML=`<td class="l"><span class="qpill" style="background:${Q[q].c}"></span><span class="nm">${p.nm}</span> <span class="tkr">${p.tk}</span></td>
+      <td class="${cls(p.r3)}">${fmt(p.r3)}</td><td class="${cls(p.r1)}">${fmt(p.r1)}</td>
+      <td class="${cls(p.x)}">${fmt(p.x)}</td><td class="${cls(p.y)}">${fmt(p.y)}</td>
+      <td class="l" style="color:${Q[q].c};font-weight:600">${q}</td>`;tb.appendChild(tr);
+  });
+});
+/* ===== US sub-industry drill-down ===== */
+function clamp(v,lo,hi){return v<lo?lo:v>hi?hi:v;}
+const USDATA=[
+{tk:"Comp/Elec Rt",nm:"Comp & Elec Retail",x:42.4,y:9.1,r3:46.0,r1:9.9,lab:"Comp/Elec Rtl"},
+{tk:"OG Refining",nm:"Oil & Gas Refining",x:26.7,y:18.7,r3:30.3,r1:19.5,lab:"OG Refining"},
+{tk:"HR Svc",nm:"HR & Employ Svc",x:24.2,y:11.5,r3:27.8,r1:12.3,lab:"HR Svc"},
+{tk:"Tech HW",nm:"Tech HW Storage & Periph",x:23.5,y:11.1,r3:27.1,r1:12.0,lab:"Tech HW"},
+{tk:"Pharma",nm:"Pharmaceuticals",x:18.0,y:0.6,r3:21.6,r1:1.5,lab:"Pharma"},
+{tk:"HCare REIT",nm:"HCare REITs",x:17.4,y:9.4,r3:21.1,r1:10.3,lab:"HCare REIT"},
+{tk:"Paper Pkg",nm:"Paper & Plastic Pkg",x:15.3,y:3.3,r3:18.9,r1:4.1,lab:"Paper Pkg"},
+{tk:"Tobacco",nm:"Tobacco",x:14.7,y:3.5,r3:18.3,r1:4.4,lab:"Tobacco"},
+{tk:"L&H Insur",nm:"Life & Health Insurance",x:13.8,y:5.6,r3:17.4,r1:6.5,lab:"L&H Insur"},
+{tk:"LifeSci Tool",nm:"Life Science Tools & Svc",x:13.4,y:3.3,r3:17.0,r1:4.2,lab:"LifeSci Tools"},
+{tk:"Ind Congl",nm:"Industrial Conglomerates",x:11.7,y:2.9,r3:15.3,r1:3.7,lab:"Ind Congl"},
+{tk:"Trading Co",nm:"Trading Cos & Distrib",x:11.0,y:0.5,r3:14.6,r1:1.3,lab:"Trading Co"},
+{tk:"Rail",nm:"Ground Transport (Rail)",x:11.0,y:12.3,r3:14.6,r1:13.2,lab:"Rail"},
+{tk:"Agri Prod",nm:"Agricultural Products",x:11.0,y:10.5,r3:14.7,r1:11.3,lab:"Agri Prod"},
+{tk:"Steel",nm:"Steel",x:9.8,y:1.7,r3:13.4,r1:2.5,lab:"Steel"},
+{tk:"Invest Bank",nm:"Investment Bank & Brokerage",x:9.8,y:3.3,r3:13.4,r1:4.1,lab:"Invest Bank"},
+{tk:"Aero/Def",nm:"Aerospace & Defense",x:9.1,y:2.4,r3:12.7,r1:3.3,lab:"Aero/Def"},
+{tk:"Banks",nm:"Diversified Banks",x:9.0,y:3.9,r3:12.6,r1:4.8,lab:"Banks"},
+{tk:"Food Distrib",nm:"Food Distributors",x:7.4,y:0.1,r3:11.0,r1:1.0},
+{tk:"Agri & Farm ",nm:"Agri & Farm Mach",x:7.3,y:1.8,r3:10.9,r1:2.7},
+{tk:"Int Svc & In",nm:"Int Svc & Infra",x:6.9,y:6.2,r3:10.5,r1:7.1},
+{tk:"Pymt Proc",nm:"Trans & Payment Proc",x:6.7,y:6.6,r3:10.3,r1:7.5,lab:"Pymt Proc"},
+{tk:"Insur Broker",nm:"Insurance Brokers",x:5.7,y:8.1,r3:9.3,r1:8.9,lab:"Insur Broker"},
+{tk:"Multi-line I",nm:"Multi-line Insurance",x:3.8,y:3.8,r3:7.4,r1:4.6},
+{tk:"Intgr Oil",nm:"Integrated Oil & Gas",x:2.6,y:13.7,r3:6.3,r1:14.6,lab:"Intgr Oil"},
+{tk:"Industrial R",nm:"Industrial REITs",x:2.6,y:4.6,r3:6.2,r1:5.5},
+{tk:"Air Freight ",nm:"Air Freight & Logistics",x:1.5,y:2.7,r3:5.2,r1:3.6},
+{tk:"Metal & Glas",nm:"Metal & Glass Containers",x:1.3,y:2.5,r3:4.9,r1:3.3},
+{tk:"Env & Facili",nm:"Env & Facilities Svc",x:-1.5,y:1.8,r3:2.1,r1:2.7},
+{tk:"Restaurant &",nm:"Restaurant & Consumer Svc",x:-2.3,y:8.4,r3:1.3,r1:9.3},
+{tk:"Publishing &",nm:"Publishing & Printing",x:-3.0,y:4.4,r3:0.6,r1:5.2},
+{tk:"Oil E&P",nm:"Oil & Gas Exploration",x:-3.7,y:9.1,r3:-0.1,r1:9.9,lab:"Oil E&P"},
+{tk:"Fncl Exch",nm:"Fncl Exch & Data",x:-7.2,y:10.2,r3:-3.6,r1:11.1,lab:"Fncl Exch"},
+{tk:"Advertising",nm:"Advertising",x:-7.3,y:4.1,r3:-3.6,r1:4.9},
+{tk:"Data Proc",nm:"Data Processing",x:-7.7,y:7.1,r3:-4.1,r1:8.0,lab:"Data Proc"},
+{tk:"Food Retail",nm:"Food Retail",x:-7.9,y:3.3,r3:-4.3,r1:4.2},
+{tk:"Systems SW",nm:"Systems Software",x:-8.1,y:0.1,r3:-4.5,r1:0.9,lab:"Systems SW"},
+{tk:"Intgr Telco",nm:"Integrated Telecom",x:-8.8,y:2.0,r3:-5.2,r1:2.9,lab:"Intgr Telco"},
+{tk:"Consumer Ele",nm:"Consumer Electronics",x:-8.8,y:3.7,r3:-5.1,r1:4.5},
+{tk:"Leisure Prod",nm:"Leisure Products",x:-9.1,y:3.2,r3:-5.5,r1:4.0},
+{tk:"OG Equip",nm:"Oil & Gas Equip & Svc",x:-14.6,y:4.3,r3:-11.0,r1:5.2,lab:"OG Equip"},
+{tk:"Broadcast",nm:"Broadcasting",x:-18.3,y:4.7,r3:-14.7,r1:5.5,lab:"Broadcast"},
+{tk:"Commod Chem",nm:"Commodity Chemicals",x:-21.8,y:4.1,r3:-18.2,r1:5.0,lab:"Commod Chem"},
+{tk:"Airlines",nm:"Passenger Airlines",x:21.4,y:-11.5,r3:25.1,r1:-10.7,lab:"Airlines"},
+{tk:"Managed HC",nm:"Managed Health Care",x:18.0,y:-2.8,r3:21.6,r1:-1.9,lab:"Managed HC"},
+{tk:"Mult-Fam Res",nm:"Mult-Fam Res REIT",x:7.8,y:-1.4,r3:11.4,r1:-0.5},
+{tk:"Single-Famil",nm:"Single-Family Res REIT",x:6.9,y:-3.1,r3:10.5,r1:-2.2},
+{tk:"Personal Car",nm:"Personal Care",x:5.1,y:-0.5,r3:8.7,r1:0.4},
+{tk:"Heavy Trucks",nm:"Cons Mach & Heavy Trucks",x:2.9,y:-7.0,r3:6.5,r1:-6.1,lab:"Heavy Trucks"},
+{tk:"Interactive ",nm:"Interactive Home Ent",x:2.0,y:-1.2,r3:5.6,r1:-0.4},
+{tk:"Home Furnish",nm:"Home Furnishings",x:1.7,y:-6.3,r3:5.3,r1:-5.4},
+{tk:"Copper",nm:"Copper",x:0.0,y:-0.4,r3:3.6,r1:0.5},
+{tk:"Hlth Cr Supp",nm:"Hlth Cr Supp",x:-0.2,y:-3.9,r3:3.4,r1:-3.0},
+{tk:"Consumer Fin",nm:"Consumer Finance",x:-0.7,y:-3.8,r3:2.9,r1:-2.9},
+{tk:"Hotels",nm:"Hotels",x:-1.1,y:-4.4,r3:2.5,r1:-3.5},
+{tk:"Building Pro",nm:"Building Products",x:-1.7,y:-1.3,r3:1.9,r1:-0.4},
+{tk:"Tech Distrib",nm:"Tech Distributors",x:-2.5,y:-0.5,r3:1.1,r1:0.4},
+{tk:"DataCtr REIT",nm:"Data Center REITs",x:-2.8,y:-0.0,r3:0.8,r1:0.8,lab:"DataCtr REIT"},
+{tk:"Industrial G",nm:"Industrial Gases",x:-3.3,y:-0.4,r3:0.3,r1:0.5},
+{tk:"Elec Utiliti",nm:"Elec Utilities",x:-3.6,y:-0.1,r3:0.0,r1:0.7},
+{tk:"Indep Power ",nm:"Indep Power Producers",x:-4.5,y:-0.7,r3:-0.9,r1:0.1},
+{tk:"Wireless Tel",nm:"Wireless Telecom",x:-4.5,y:-2.3,r3:-0.9,r1:-1.4},
+{tk:"Brewers",nm:"Brewers",x:-6.3,y:-2.1,r3:-2.7,r1:-1.3},
+{tk:"Restaurants",nm:"Restaurants",x:-6.5,y:-3.6,r3:-2.9,r1:-2.8,lab:"Restaurants"},
+{tk:"Home Impr",nm:"Home Improvement Retail",x:-7.0,y:-5.8,r3:-3.4,r1:-5.0,lab:"Home Impr"},
+{tk:"Specialty Ch",nm:"Specialty Chemicals",x:-8.4,y:-6.8,r3:-4.8,r1:-5.9},
+{tk:"Elec Comp",nm:"Electronic Components",x:-8.7,y:-21.1,r3:-5.1,r1:-20.3,lab:"Elec Comp"},
+{tk:"Auto Parts",nm:"Auto Parts & Equipment",x:-9.5,y:-7.1,r3:-5.9,r1:-6.2,lab:"Auto Parts"},
+{tk:"HC Equip",nm:"Hlth Cr Equip",x:-9.6,y:-2.3,r3:-6.0,r1:-1.4,lab:"HC Equip"},
+{tk:"Casinos & Ga",nm:"Casinos & Gaming",x:-10.2,y:-5.0,r3:-6.6,r1:-4.1},
+{tk:"Footwear",nm:"Footwear",x:-11.1,y:-1.0,r3:-7.5,r1:-0.1},
+{tk:"Tele Tower R",nm:"Tele Tower REIT",x:-11.3,y:-7.1,r3:-7.7,r1:-6.3},
+{tk:"Elec Mfg",nm:"Elec Manu Svc",x:-11.9,y:-10.0,r3:-8.3,r1:-9.2,lab:"Elec Mfg"},
+{tk:"App SW",nm:"Applic Software",x:-12.1,y:-0.4,r3:-8.4,r1:0.4,lab:"App SW"},
+{tk:"Hyper & Supe",nm:"Hyper & Supercntrs",x:-12.4,y:-4.4,r3:-8.8,r1:-3.5},
+{tk:"Heavy Elec",nm:"Heavy Electrical Equip",x:-13.0,y:-3.8,r3:-9.4,r1:-2.9,lab:"Heavy Elec"},
+{tk:"Real Estate ",nm:"Real Estate Svc",x:-13.2,y:-1.7,r3:-9.6,r1:-0.9},
+{tk:"Int Med Svc",nm:"Int Med Svc",x:-13.2,y:-2.5,r3:-9.6,r1:-1.6},
+{tk:"Const Matls",nm:"Const Materials",x:-13.7,y:-11.2,r3:-10.1,r1:-10.4,lab:"Const Matls"},
+{tk:"Broadline",nm:"Broadline Retail",x:-14.4,y:-1.1,r3:-10.8,r1:-0.2,lab:"Broadline"},
+{tk:"Other Spec R",nm:"Other Specialty Retail",x:-15.7,y:-2.6,r3:-12.1,r1:-1.8,lab:"Other Spec Rtl"},
+{tk:"Pass Grnd",nm:"Passenger Ground Transport",x:-17.1,y:-14.3,r3:-13.5,r1:-13.5,lab:"Pass Grnd"},
+{tk:"Distillers",nm:"Distillers & Vintners",x:-17.2,y:-11.1,r3:-13.6,r1:-10.2,lab:"Distillers"},
+{tk:"HC Facils",nm:"Hlth Cr Facilities",x:-17.6,y:-2.2,r3:-14.0,r1:-1.4,lab:"HC Facils"},
+{tk:"Auto Mfrs",nm:"Automobile Mfrs",x:-18.2,y:-16.1,r3:-14.6,r1:-15.3,lab:"Auto Mfrs"},
+{tk:"Auto Rtl",nm:"Auto Retail",x:-18.4,y:-4.4,r3:-14.8,r1:-3.5,lab:"Auto Rtl"},
+{tk:"Gold",nm:"Gold",x:-23.1,y:-3.9,r3:-19.5,r1:-3.1,lab:"Gold"},
+{tk:"Cable/Sat",nm:"Cable & Satellite",x:-32.3,y:-9.6,r3:-28.7,r1:-8.8,lab:"Cable/Sat"},
+{tk:"HC Svcs",nm:"Healthcare Services",x:18.7,y:3.6,r3:22.3,r1:4.5,lab:"HC Svcs"},
+{tk:"Hotel REIT",nm:"Hotel & Resort REITs",x:18.2,y:0.7,r3:21.9,r1:1.5,lab:"Hotel REIT"},
+{tk:"Office REIT",nm:"Office REITs",x:16.7,y:2.8,r3:20.4,r1:3.6,lab:"Office REIT"},
+{tk:"Biotech",nm:"Biotech",x:12.4,y:0.8,r3:16.0,r1:1.7,lab:"Biotech"},
+{tk:"Reinsurance",nm:"Reinsurance",x:9.2,y:7.5,r3:12.8,r1:8.3},
+{tk:"Distributors",nm:"Distributors",x:8.8,y:6.2,r3:12.4,r1:7.1,lab:"Distributors"},
+{tk:"Property & C",nm:"Property & Casualty Ins",x:8.4,y:3.6,r3:12.0,r1:4.5},
+{tk:"Retail REITs",nm:"Retail REITs",x:6.9,y:1.4,r3:10.5,r1:2.2},
+{tk:"Cargo Ground",nm:"Cargo Ground Transport",x:5.9,y:3.8,r3:9.5,r1:4.7},
+{tk:"Asset Mgmt &",nm:"Asset Mgmt & Custody",x:5.2,y:9.7,r3:8.8,r1:10.6},
+{tk:"Fert & Agr C",nm:"Fert & Agr Chem",x:4.9,y:8.5,r3:8.5,r1:9.4},
+{tk:"Reg Banks",nm:"Regional Banks",x:4.1,y:1.2,r3:7.7,r1:2.0,lab:"Reg Banks"},
+{tk:"Div Supp Svc",nm:"Div Supp Svc",x:3.6,y:10.0,r3:7.2,r1:10.8},
+{tk:"Health Care ",nm:"Health Care Distributors",x:0.4,y:4.7,r3:4.0,r1:5.6},
+{tk:"Water Utilit",nm:"Water Utilities",x:-0.9,y:0.6,r3:2.8,r1:1.5},
+{tk:"Apparel Reta",nm:"Apparel Retail",x:-3.1,y:2.0,r3:0.5,r1:2.9},
+{tk:"Gas Utilitie",nm:"Gas Utilities",x:-6.5,y:1.5,r3:-2.9,r1:2.3},
+{tk:"Semicap",nm:"Semiconductor Equip",x:14.6,y:-17.5,r3:18.2,r1:-16.6,lab:"Semicap"},
+{tk:"Comm Eq",nm:"Communications Equip",x:7.8,y:-0.2,r3:11.4,r1:0.7,lab:"Comm Eq"},
+{tk:"Oil & Gas St",nm:"Oil & Gas Storage & Transp",x:4.6,y:-1.2,r3:8.2,r1:-0.4},
+{tk:"Self-Storage",nm:"Self-Storage REIT",x:3.2,y:-1.6,r3:6.8,r1:-0.7},
+{tk:"Specialized ",nm:"Specialized REITs",x:1.9,y:-3.4,r3:5.5,r1:-2.5},
+{tk:"Packaged Foo",nm:"Packaged Foods",x:1.6,y:-0.3,r3:5.2,r1:0.6},
+{tk:"Multi-Sector",nm:"Multi-Sector Holdings",x:1.1,y:-1.6,r3:4.7,r1:-0.8},
+{tk:"Multi-Utilit",nm:"Multi-Utilities",x:0.0,y:-2.6,r3:3.6,r1:-1.8},
+{tk:"Soft Drinks",nm:"Soft Drinks",x:-0.1,y:-3.3,r3:3.5,r1:-2.4},
+{tk:"Semis",nm:"Semiconductors",x:-0.4,y:-1.8,r3:3.2,r1:-0.9,lab:"Semis"},
+{tk:"Household Pr",nm:"Household Products",x:-1.4,y:-1.4,r3:2.2,r1:-0.5},
+{tk:"Industrial M",nm:"Industrial Machinery",x:-3.5,y:-0.2,r3:0.1,r1:0.7},
+{tk:"Elec Com & E",nm:"Elec Com & Equip",x:-5.4,y:-2.6,r3:-1.8,r1:-1.8},
+{tk:"Elec Eqp & I",nm:"Elec Eqp & Instr",x:-5.6,y:-0.7,r3:-1.9,r1:0.1},
+{tk:"Timber REIT",nm:"Timber REIT",x:-7.1,y:-6.3,r3:-3.5,r1:-5.4},
+{tk:"Homebuild",nm:"Homebuilding",x:-8.4,y:-9.8,r3:-4.8,r1:-9.0,lab:"Homebuild"},
+{tk:"Const/Eng",nm:"Const & Engineering",x:-8.7,y:-8.7,r3:-5.1,r1:-7.8,lab:"Const/Eng"},
+{tk:"Apparel & Ac",nm:"Apparel & Accessories",x:-10.4,y:-5.2,r3:-6.8,r1:-4.3},
+{tk:"IT Consult",nm:"IT Consulting & Svc",x:-13.6,y:-11.7,r3:-10.0,r1:-10.8,lab:"IT Consult"},
+{tk:"Movies",nm:"Movies & Entertainment",x:-18.7,y:-5.3,r3:-15.1,r1:-4.4,lab:"Movies"},
+{tk:"Appliances",nm:"Household Appliances",x:-36.8,y:-5.2,r3:-33.2,r1:-4.4,lab:"Appliances"},
+];
+function drawBig(svg,pts,R){
+  const VB=svg.viewBox.baseVal,W=VB.width,H=VB.height,m={l:52,r:18,t:24,b:40},pw=W-m.l-m.r,ph=H-m.t-m.b;
+  const X=v=>m.l+(clamp(v,R.xlo,R.xhi)-R.xlo)/(R.xhi-R.xlo)*pw;
+  const Y=v=>m.t+(R.yhi-clamp(v,R.ylo,R.yhi))/(R.yhi-R.ylo)*ph;
+  const zx=X(0),zy=Y(0);
+  svg.appendChild(el('rect',{x:zx,y:m.t,width:m.l+pw-zx,height:zy-m.t,fill:Q.Leading.bg}));
+  svg.appendChild(el('rect',{x:m.l,y:m.t,width:zx-m.l,height:zy-m.t,fill:Q.Improving.bg}));
+  svg.appendChild(el('rect',{x:zx,y:zy,width:m.l+pw-zx,height:m.t+ph-zy,fill:Q.Weakening.bg}));
+  svg.appendChild(el('rect',{x:m.l,y:zy,width:zx-m.l,height:m.t+ph-zy,fill:Q.Lagging.bg}));
+  svg.appendChild(el('rect',{x:m.l,y:m.t,width:pw,height:ph,fill:'none',stroke:'var(--line)','stroke-width':1,rx:4}));
+  svg.appendChild(el('line',{x1:m.l,y1:zy,x2:m.l+pw,y2:zy,class:'zeroln'}));
+  svg.appendChild(el('line',{x1:zx,y1:m.t,x2:zx,y2:m.t+ph,class:'zeroln'}));
+  const qc=[['LEADING',m.l+pw-7,m.t+16,'end','var(--lead)'],['IMPROVING',m.l+7,m.t+16,'start','var(--impr)'],
+            ['WEAKENING',m.l+pw-7,m.t+ph-8,'end','var(--weak)'],['LAGGING',m.l+7,m.t+ph-8,'start','var(--lag)']];
+  qc.forEach(q=>{const t=el('text',{x:q[1],y:q[2],class:'qlab','text-anchor':q[3],fill:q[4],opacity:.6});t.textContent=q[0];svg.appendChild(t);});
+  const xa=el('text',{x:m.l+pw/2,y:H-8,class:'axcap','text-anchor':'middle'});xa.textContent='RS-Ratio  (relative 3M, %)  →';svg.appendChild(xa);
+  const ya=el('text',{x:14,y:m.t+ph/2,class:'axcap','text-anchor':'middle',transform:`rotate(-90 14 ${m.t+ph/2})`});ya.textContent='RS-Momentum (relative 1M, %)  →';svg.appendChild(ya);
+  pts.forEach(p=>{
+    const q=quad(p.x,p.y),col=Q[q].c,px=X(p.x),py=Y(p.y),g=el('g',{});
+    const c=el('circle',{cx:px,cy:py,r:p.lab?4.6:3.6,fill:col,stroke:'#0E1B2E','stroke-width':1.2,'fill-opacity':p.lab?1:.78});
+    const ti=el('title',{});ti.textContent=`${p.nm}  ·  ${q}\n3M ${fmt(p.r3)}%  |  1M ${fmt(p.r1)}%\nrel3M ${fmt(p.x)}  |  rel1M ${fmt(p.y)}`;
+    c.appendChild(ti);g.appendChild(c);
+    if(p.lab){let ax=px+6,anchor='start';if(px>m.l+pw-60){ax=px-6;anchor='end';}
+      const t=el('text',{x:ax,y:py+3,class:'tk','text-anchor':anchor,fill:col});t.textContent=p.lab;g.appendChild(t);}
+    svg.appendChild(g);
+  });
+}
+drawBig(document.getElementById('usbig'),USDATA,{xlo:-38,xhi:44,ylo:-22,yhi:20});
+(function(){
+  const byQ=q=>USDATA.filter(p=>quad(p.x,p.y)===q);
+  const cc=v=>v>0?'pos':v<0?'neg':'';
+  function urow(p){const q=quad(p.x,p.y);return `<tr><td class="l"><span class="qd" style="background:${Q[q].c}"></span><span class="nm">${p.nm}</span></td>`
+    +`<td class="${cc(p.r3)}">${fmt(p.r3)}</td><td class="${cc(p.r1)}">${fmt(p.r1)}</td><td class="${cc(p.x)}">${fmt(p.x)}</td><td class="${cc(p.y)}">${fmt(p.y)}</td></tr>`;}
+  document.getElementById('utL').innerHTML=byQ('Leading').sort((a,b)=>b.x-a.x).slice(0,14).map(urow).join('');
+  const wg=byQ('Weakening').sort((a,b)=>b.x-a.x).concat(byQ('Lagging').sort((a,b)=>a.x-b.x).slice(0,9));
+  document.getElementById('utWG').innerHTML=wg.map(urow).join('');
+})();
+
+
+/* ===== tails ===== */
+const DATES = LANG==='en' ? ['30 Jun','8 Jul','24 Jul'] : ['30 มิ.ย.','8 ก.ค.','24 ก.ค.'];
+const T=[
+{tk:"US",nm:"US (S&P 500)",p:[{x:6.8,y:0.1,r3:18.2,r1:-1.3},{x:6.1,y:-0.8,r3:13.4,r1:1.1},{x:3.7,y:0.9,r3:3.5,r1:0.8}]},
+{tk:"Nasdaq",nm:"Nasdaq 100",p:[{x:20.6,y:1.1,r3:31.9,r1:-0.3},{x:13.2,y:-2.9,r3:20.5,r1:-0.9},{x:3.3,y:-3.6,r3:3.1,r1:-3.7}]},
+{tk:"Dow",nm:"Dow Jones",p:[{x:4.2,y:3.6,r3:15.6,r1:2.3},{x:6.1,y:1.9,r3:13.4,r1:3.8},{x:5.6,y:0.2,r3:5.4,r1:0.1}]},
+{tk:"Europe",nm:"Europe",p:[{x:-0.5,y:0.8,r3:10.9,r1:-0.5},{x:-0.7,y:-0.2,r3:6.6,r1:1.7},{x:1.8,y:1.8,r3:1.6,r1:1.7}]},
+{tk:"Japan",nm:"Japan",p:[{x:3.1,y:1.7,r3:14.4,r1:0.3},{x:1.5,y:-0.7,r3:8.8,r1:1.2},{x:4.7,y:-1.4,r3:4.5,r1:-1.5}]},
+{tk:"Taiwan",nm:"Taiwan",p:[{x:46.2,y:7.0,r3:57.5,r1:5.7},{x:34.5,y:-0.5,r3:41.9,r1:1.4},{x:11.5,y:-6.3,r3:11.3,r1:-6.4}]},
+{tk:"Indonesia",nm:"Indonesia",p:[{x:-38.2,y:-9.7,r3:-26.8,r1:-11.1},{x:-28.4,y:9.3,r3:-21.1,r1:11.3},{x:-20.0,y:4.5,r3:-20.2,r1:4.4}]},
+{tk:"Vietnam",nm:"Vietnam",p:[{x:-1.7,y:0.1,r3:9.6,r1:-1.2},{x:-2.8,y:-0.1,r3:4.5,r1:1.9},{x:-12.8,y:-10.3,r3:-13.0,r1:-10.4}]},
+{tk:"Malaysia",nm:"Malaysia",p:[{x:-14.9,y:-4.3,r3:-3.5,r1:-5.7},{x:-10.3,y:-4.4,r3:-3.0,r1:-2.4},{x:-5.8,y:2.6,r3:-6.0,r1:2.5}]},
+{tk:"S'pore",nm:"Singapore",p:[{x:-4.2,y:1.8,r3:7.1,r1:0.4},{x:0.7,y:4.9,r3:8.0,r1:6.9},{x:10.2,y:6.9,r3:10.0,r1:6.8}]},
+{tk:"India",nm:"India",p:[{x:-2.6,y:3.1,r3:8.7,r1:1.7},{x:-3.1,y:2.5,r3:4.2,r1:4.5},{x:-3.0,y:-3.1,r3:-3.2,r1:-3.2}]},
+{tk:"China A",nm:"China A",p:[{x:2.5,y:3.3,r3:13.8,r1:1.9},{x:1.7,y:-0.2,r3:9.0,r1:1.8},{x:-1.3,y:-4.1,r3:-1.5,r1:-4.2}]},
+{tk:"HK",nm:"Hong Kong",p:[{x:-17.9,y:-8.1,r3:-6.5,r1:-9.5},{x:-16.7,y:-5.5,r3:-9.4,r1:-3.6},{x:-3.3,y:6.7,r3:-3.5,r1:6.6}]},
+{tk:"Thailand",nm:"Thailand",p:[{x:-3.3,y:-0.2,r3:8.0,r1:-1.6},{x:-1.9,y:-3.2,r3:5.4,r1:-1.3},{x:5.5,y:5.3,r3:5.3,r1:5.2}]},
+];
+
+function draw(svg,data,R){
+  const VB=svg.viewBox.baseVal,W=VB.width,H=VB.height,m={l:58,r:24,t:28,b:44},pw=W-m.l-m.r,ph=H-m.t-m.b;
+  const X=v=>m.l+(clamp(v,R.xlo,R.xhi)-R.xlo)/(R.xhi-R.xlo)*pw,
+        Y=v=>m.t+(R.yhi-clamp(v,R.ylo,R.yhi))/(R.yhi-R.ylo)*ph;
+  const zx=X(0),zy=Y(0);
+  svg.appendChild(el('rect',{x:zx,y:m.t,width:m.l+pw-zx,height:zy-m.t,fill:Q.Leading.bg}));
+  svg.appendChild(el('rect',{x:m.l,y:m.t,width:zx-m.l,height:zy-m.t,fill:Q.Improving.bg}));
+  svg.appendChild(el('rect',{x:zx,y:zy,width:m.l+pw-zx,height:m.t+ph-zy,fill:Q.Weakening.bg}));
+  svg.appendChild(el('rect',{x:m.l,y:zy,width:zx-m.l,height:m.t+ph-zy,fill:Q.Lagging.bg}));
+  svg.appendChild(el('rect',{x:m.l,y:m.t,width:pw,height:ph,fill:'none',stroke:'var(--line)','stroke-width':1,rx:4}));
+  svg.appendChild(el('line',{x1:m.l,y1:zy,x2:m.l+pw,y2:zy,class:'zeroln'}));
+  svg.appendChild(el('line',{x1:zx,y1:m.t,x2:zx,y2:m.t+ph,class:'zeroln'}));
+  [['LEADING',m.l+pw-9,m.t+18,'end','var(--lead)'],['IMPROVING',m.l+9,m.t+18,'start','var(--impr)'],
+   ['WEAKENING',m.l+pw-9,m.t+ph-10,'end','var(--weak)'],['LAGGING',m.l+9,m.t+ph-10,'start','var(--lag)']]
+   .forEach(q=>{const t=el('text',{x:q[1],y:q[2],class:'qlab','text-anchor':q[3],fill:q[4],opacity:.55});t.textContent=q[0];svg.appendChild(t);});
+  const xa=el('text',{x:m.l+pw/2,y:H-10,class:'axcap','text-anchor':'middle'});
+  xa.textContent='RS-Ratio  (relative 3M, %)  \u2192';svg.appendChild(xa);
+  const ya=el('text',{x:16,y:m.t+ph/2,class:'axcap','text-anchor':'middle',transform:`rotate(-90 16 ${m.t+ph/2})`});
+  ya.textContent='RS-Momentum (relative 1M, %)  \u2192';svg.appendChild(ya);
+
+  data.forEach(mk=>{
+    const last=mk.p[mk.p.length-1], q=quad(last.x,last.y), col=Q[q].hex;
+    const g=el('g',{});
+    // tail polyline
+    const pts=mk.p.map(p=>`${X(p.x).toFixed(1)},${Y(p.y).toFixed(1)}`).join(' ');
+    g.appendChild(el('polyline',{points:pts,fill:'none',stroke:col,'stroke-width':1,
+      'stroke-opacity':.4,'stroke-dasharray':'2 2.5','stroke-linecap':'round','stroke-linejoin':'round'}));
+    // arrowhead on final segment
+    const a=mk.p[mk.p.length-2], b=last;
+    const ax=X(a.x),ay=Y(a.y),bx=X(b.x),by=Y(b.y);
+    const dx=bx-ax,dy=by-ay,len=Math.hypot(dx,dy);
+    if(len>10){
+      const ux=dx/len,uy=dy/len,hx=bx-ux*6,hy=by-uy*6,s=2.7;
+      g.appendChild(el('polygon',{points:`${hx+ -uy*s},${hy+ux*s} ${hx-(-uy*s)},${hy-ux*s} ${bx-ux*1.5},${by-uy*1.5}`,
+        fill:col,'fill-opacity':.5}));
+    }
+    // intermediate points (older = smaller, fainter)
+    mk.p.forEach((p,i)=>{
+      const isLast=i===mk.p.length-1;
+      const r=isLast?7:(i===0?2:2.9);
+      const c=el('circle',{cx:X(p.x),cy:Y(p.y),r:r,fill:col,
+        'fill-opacity':isLast?1:(i===0?.3:.5),stroke:'#0E1B2E','stroke-width':isLast?2:0.8});
+      const ti=el('title',{});
+      ti.textContent=`${mk.nm} \u00b7 ${DATES[i]}\n${quad(p.x,p.y)}\n3M ${fmt(p.r3)}% | 1M ${fmt(p.r1)}%\nrel3M ${fmt(p.x)} | rel1M ${fmt(p.y)}`;
+      c.appendChild(ti); g.appendChild(c);
+    });
+    // label at newest point (only if flagged)
+    if(mk.lab!==undefined||data===T){
+      let lx=X(last.x)+11, anchor='start';
+      if(lx>m.l+pw-72){lx=X(last.x)-11;anchor='end';}
+      const t=el('text',{x:lx,y:Y(last.y)+4,class:'tkbig','text-anchor':anchor,fill:col});
+      t.textContent=mk.lab||mk.tk; g.appendChild(t);
+    }
+    svg.appendChild(g);
+  });
+  // snapshot key
+  const kx=m.l+10, ky=m.t+ph-30;
+  [[2,.3,DATES[0]],[2.9,.5,DATES[1]],[7,1,DATES[2]]].forEach((k,i)=>{
+    svg.appendChild(el('circle',{cx:kx+i*74,cy:ky,r:k[0],fill:'#94A8C2','fill-opacity':k[1]}));
+    const t=el('text',{x:kx+i*74+11,y:ky+4,class:'axcap',fill:'#94A8C2'});t.textContent=k[2];svg.appendChild(t);
+  });
+}
+
+draw(document.getElementById('full'),T,{xlo:-42,xhi:50,ylo:-12,yhi:10});
+draw(document.getElementById('zoom'),T,{xlo:-16,xhi:16,ylo:-12,yhi:10});
+
+const SETT=[
+{tk:"CONS",nm:"Constr Services",p:[{x:22.9,y:6.3,r3:32.7,r1:7.8},{x:12.8,y:2.4,r3:18.9,r1:3.3},{x:16.9,y:-4.9,r3:28.7,r1:1.7}],lab:"CONS"},
+{tk:"PKG",nm:"Packaging",p:[{x:20.1,y:15.6,r3:29.9,r1:17.0},{x:15.1,y:6.3,r3:21.2,r1:7.2},{x:21.4,y:0.8,r3:33.2,r1:7.4}],lab:"PKG"},
+{tk:"IMM",nm:"Indu Mat & Mach",p:[{x:18.5,y:11.5,r3:28.2,r1:13.0},{x:19.6,y:4.9,r3:25.7,r1:5.8},{x:23.8,y:2.1,r3:35.6,r1:8.7}]},
+{tk:"TRANS",nm:"Trans & Logist",p:[{x:9.2,y:10.1,r3:19.0,r1:11.5},{x:3.6,y:4.7,r3:9.8,r1:5.7},{x:2.7,y:-4.2,r3:14.6,r1:2.4}],lab:"TRANS"},
+{tk:"CONMT",nm:"Constr Material",p:[{x:6.3,y:4.5,r3:16.1,r1:5.9},{x:6.0,y:1.3,r3:12.1,r1:2.3},{x:2.1,y:-1.2,r3:13.9,r1:5.4}]},
+{tk:"FIN",nm:"Finance/Sec",p:[{x:4.3,y:4.7,r3:14.1,r1:6.1},{x:3.9,y:9.6,r3:10.0,r1:10.6},{x:7.9,y:1.8,r3:19.7,r1:8.4}],lab:"FIN"},
+{tk:"BANK",nm:"Banking",p:[{x:3.8,y:7.8,r3:13.5,r1:9.2},{x:10.8,y:12.4,r3:17.0,r1:13.3},{x:17.6,y:6.1,r3:29.5,r1:12.7}],lab:"BANK"},
+{tk:"TOUR",nm:"Tourism & Leisure",p:[{x:3.5,y:7.1,r3:13.3,r1:8.6},{x:-5.6,y:3.0,r3:0.5,r1:4.0},{x:-2.8,y:-12.9,r3:9.0,r1:-6.3}],lab:"TOUR"},
+{tk:"INS",nm:"Insurance",p:[{x:3.3,y:3.2,r3:13.0,r1:4.7},{x:5.9,y:6.3,r3:12.0,r1:7.3},{x:8.0,y:-0.5,r3:19.9,r1:6.1}]},
+{tk:"AUTO",nm:"Automotive",p:[{x:2.6,y:1.7,r3:12.3,r1:3.2},{x:3.9,y:0.6,r3:10.0,r1:1.6},{x:6.7,y:0.2,r3:18.5,r1:6.8}]},
+{tk:"PROP",nm:"Property Dev",p:[{x:0.6,y:3.4,r3:10.3,r1:4.8},{x:-2.7,y:1.2,r3:3.5,r1:2.1},{x:-0.9,y:-5.0,r3:10.9,r1:1.6}]},
+{tk:"COM",nm:"Commerce",p:[{x:-0.0,y:2.3,r3:9.7,r1:3.8},{x:-4.8,y:2.5,r3:1.3,r1:3.5},{x:-0.7,y:-4.0,r3:11.2,r1:2.6}]},
+{tk:"PF&REIT",nm:"Prop Fund & REITs",p:[{x:-0.4,y:1.7,r3:9.4,r1:3.1},{x:1.0,y:3.0,r3:7.2,r1:3.9},{x:-1.7,y:-3.1,r3:10.2,r1:3.6}]},
+{tk:"HELTH",nm:"Health Care Svc",p:[{x:-4.0,y:2.9,r3:5.7,r1:4.4},{x:-5.1,y:2.8,r3:1.1,r1:3.7},{x:-8.6,y:-7.8,r3:3.2,r1:-1.2}]},
+{tk:"MEDIA",nm:"Media & Publishing",p:[{x:-4.6,y:0.2,r3:5.2,r1:1.7},{x:-6.3,y:0.6,r3:-0.2,r1:1.5},{x:0.3,y:4.1,r3:12.1,r1:10.8}]},
+{tk:"FOOD",nm:"Food & Bev",p:[{x:-6.2,y:3.7,r3:3.6,r1:5.2},{x:-1.9,y:6.9,r3:4.3,r1:7.8},{x:-0.2,y:-1.0,r3:11.7,r1:5.6}],lab:"FOOD"},
+{tk:"ETRON",nm:"Electronics",p:[{x:12.0,y:-8.9,r3:21.8,r1:-7.4},{x:0.1,y:-12.5,r3:6.2,r1:-11.5},{x:-11.7,y:-5.4,r3:0.2,r1:1.2}],lab:"ETRON"},
+{tk:"PAPER",nm:"Paper & Print",p:[{x:-0.9,y:-1.5,r3:8.8,r1:0.0},{x:5.4,y:2.2,r3:11.6,r1:3.1},{x:0.5,y:-4.1,r3:12.3,r1:2.5}],lab:"PAPER"},
+{tk:"HOME",nm:"Home & Office",p:[{x:-8.8,y:-0.6,r3:1.0,r1:0.9},{x:-4.4,y:1.2,r3:1.7,r1:2.2},{x:-8.4,y:-5.7,r3:3.5,r1:0.9}],lab:"HOME"},
+{tk:"ENERG",nm:"Energy & Util",p:[{x:-9.8,y:-2.2,r3:0.0,r1:-0.7},{x:-2.4,y:-0.4,r3:3.7,r1:0.5},{x:3.1,y:7.4,r3:15.0,r1:14.0}],lab:"ENERG"},
+{tk:"FASH",nm:"Fashion",p:[{x:-10.6,y:-3.4,r3:-0.9,r1:-2.0},{x:-7.7,y:-3.7,r3:-1.6,r1:-2.7},{x:-10.7,y:-3.7,r3:1.1,r1:2.9}]},
+{tk:"ICT",nm:"Info & Comm Tech",p:[{x:-11.6,y:-1.0,r3:-1.8,r1:0.5},{x:-6.8,y:-0.1,r3:-0.7,r1:0.8},{x:-4.2,y:0.6,r3:7.6,r1:7.2}]},
+{tk:"PERS",nm:"Pers Prod & Pharm",p:[{x:-12.6,y:-5.4,r3:-2.9,r1:-4.0},{x:-7.0,y:-2.4,r3:-0.9,r1:-1.4},{x:-3.0,y:-0.8,r3:8.9,r1:5.9}]},
+{tk:"PROF",nm:"Professional Svc",p:[{x:-14.1,y:-4.6,r3:-4.4,r1:-3.1},{x:-12.1,y:-3.1,r3:-6.0,r1:-2.2},{x:-12.8,y:-6.1,r3:-1.0,r1:0.6}]},
+{tk:"STEEL",nm:"Steel",p:[{x:-15.9,y:-5.5,r3:-6.1,r1:-4.0},{x:-8.5,y:-1.6,r3:-2.4,r1:-0.7},{x:-7.1,y:-1.2,r3:4.8,r1:5.4}]},
+{tk:"PETRO",nm:"Petrochem & Chem",p:[{x:-16.9,y:-3.9,r3:-7.1,r1:-2.4},{x:-10.0,y:-1.0,r3:-3.8,r1:-0.1},{x:-6.4,y:12.4,r3:5.4,r1:19.0}],lab:"PETRO"},
+{tk:"AGRI",nm:"Agri-Business",p:[{x:-17.8,y:-5.7,r3:-8.0,r1:-4.2},{x:-10.9,y:-2.5,r3:-4.7,r1:-1.6},{x:-7.9,y:0.5,r3:3.9,r1:7.1}]},
+];
+const HKT=[
+{tk:"IND",nm:"Industrials",p:[{x:13.5,y:5.6,r3:5.5,r1:-3.2},{x:3.3,y:-3.0,r3:-4.7,r1:-4.9},{x:-3.8,y:-16.8,r3:-8.5,r1:-8.2}],lab:"IND"},
+{tk:"CONG",nm:"Conglomerates",p:[{x:11.3,y:0.3,r3:3.3,r1:-8.4},{x:6.4,y:-5.2,r3:-1.6,r1:-7.2},{x:12.8,y:-1.1,r3:8.1,r1:7.6}],lab:"CONG"},
+{tk:"FIN",nm:"Financials",p:[{x:9.4,y:3.8,r3:1.4,r1:-4.9},{x:6.6,y:2.5,r3:-1.4,r1:0.6},{x:9.8,y:1.0,r3:5.1,r1:9.7}],lab:"FIN"},
+{tk:"IT",nm:"Info Tech",p:[{x:6.3,y:7.3,r3:-1.8,r1:-1.5},{x:5.4,y:4.9,r3:-2.6,r1:2.9},{x:-3.0,y:-6.7,r3:-7.8,r1:2.0}],lab:"IT"},
+{tk:"HLTH",nm:"Health Care",p:[{x:-5.8,y:2.3,r3:-13.8,r1:-6.4},{x:-5.3,y:12.5,r3:-13.3,r1:10.5},{x:-0.3,y:7.5,r3:-5.0,r1:16.2}],lab:"HLTH"},
+{tk:"TEL",nm:"Telecom",p:[{x:1.3,y:-2.6,r3:-6.7,r1:-11.4},{x:1.5,y:-3.5,r3:-6.5,r1:-5.5},{x:2.3,y:-2.8,r3:-2.5,r1:5.9}],lab:"TEL"},
+{tk:"PROP",nm:"Prop & Constr",p:[{x:-0.8,y:-5.3,r3:-8.8,r1:-14.1},{x:-1.8,y:-5.2,r3:-9.9,r1:-7.2},{x:-1.7,y:-2.3,r3:-6.4,r1:6.4}],lab:"PROP"},
+{tk:"UTIL",nm:"Utilities",p:[{x:-3.7,y:-3.3,r3:-11.7,r1:-12.1},{x:-3.3,y:-4.5,r3:-11.3,r1:-6.5},{x:0.0,y:-2.6,r3:-4.7,r1:6.0}],lab:"UTIL"},
+{tk:"STPL",nm:"Cons Staples",p:[{x:-10.0,y:-1.7,r3:-18.1,r1:-10.5},{x:-10.0,y:-3.7,r3:-18.0,r1:-5.7},{x:-4.6,y:-4.7,r3:-9.3,r1:4.0}],lab:"STPL"},
+{tk:"DISC",nm:"Cons Discretionary",p:[{x:-10.3,y:-7.1,r3:-18.3,r1:-15.9},{x:-5.8,y:-3.2,r3:-13.8,r1:-5.2},{x:-6.3,y:7.1,r3:-11.1,r1:15.8}],lab:"DISC"},
+{tk:"ENE",nm:"Energy",p:[{x:-17.1,y:-10.7,r3:-25.1,r1:-19.4},{x:-8.0,y:-13.9,r3:-16.0,r1:-15.9},{x:-7.1,y:3.2,r3:-11.8,r1:11.9}],lab:"ENE"},
+{tk:"MAT",nm:"Materials",p:[{x:-20.2,y:-11.3,r3:-28.2,r1:-20.1},{x:-22.1,y:-8.1,r3:-30.1,r1:-10.1},{x:-12.3,y:5.5,r3:-17.0,r1:14.2}],lab:"MAT"},
+];
+const CNT=[
+{tk:"IT",nm:"Info Tech",p:[{x:66.6,y:20.0,r3:77.5,r1:21.8},{x:45.2,y:12.9,r3:48.7,r1:13.8},{x:13.2,y:-13.4,r3:11.7,r1:-17.4}],lab:"IT"},
+{tk:"TELC",nm:"Telecom Services",p:[{x:51.2,y:6.4,r3:62.1,r1:8.1},{x:29.8,y:-3.4,r3:33.3,r1:-2.5},{x:12.8,y:-10.1,r3:11.4,r1:-14.1}],lab:"TELC"},
+{tk:"HLTH",nm:"Health Care",p:[{x:-16.0,y:0.1,r3:-5.2,r1:1.9},{x:-11.3,y:7.6,r3:-7.8,r1:8.5},{x:2.3,y:13.6,r3:0.9,r1:9.6}],lab:"HLTH"},
+{tk:"FIN",nm:"Financials",p:[{x:-16.3,y:-4.6,r3:-5.5,r1:-2.8},{x:-7.3,y:-0.8,r3:-3.9,r1:0.1},{x:2.8,y:10.8,r3:1.4,r1:6.8}],lab:"FIN"},
+{tk:"UTIL",nm:"Utilities",p:[{x:-16.9,y:-9.9,r3:-6.1,r1:-8.2},{x:-4.5,y:-4.7,r3:-1.0,r1:-3.8},{x:5.6,y:12.3,r3:4.2,r1:8.3}],lab:"UTIL"},
+{tk:"IND",nm:"Industrials",p:[{x:-19.2,y:-10.4,r3:-8.4,r1:-8.6},{x:-15.2,y:-7.4,r3:-11.8,r1:-6.5},{x:-12.2,y:0.8,r3:-13.6,r1:-3.2}],lab:"IND"},
+{tk:"MAT",nm:"Materials",p:[{x:-21.9,y:-6.5,r3:-11.1,r1:-4.8},{x:-21.5,y:-2.0,r3:-18.1,r1:-1.1},{x:-14.4,y:0.9,r3:-15.9,r1:-3.1}],lab:"MAT"},
+{tk:"DISC",nm:"Cons Discretionary",p:[{x:-22.5,y:-11.6,r3:-11.7,r1:-9.8},{x:-13.3,y:-6.6,r3:-9.8,r1:-5.7},{x:-4.9,y:12.0,r3:-6.3,r1:8.0}],lab:"DISC"},
+{tk:"STPL",nm:"Cons Staples",p:[{x:-30.0,y:-13.0,r3:-19.1,r1:-11.3},{x:-22.5,y:-5.2,r3:-19.0,r1:-4.3},{x:-6.2,y:14.5,r3:-7.6,r1:10.5}],lab:"STPL"},
+{tk:"ENE",nm:"Energy",p:[{x:-33.0,y:-16.7,r3:-22.1,r1:-14.9},{x:-16.3,y:-14.7,r3:-12.8,r1:-13.8},{x:-3.4,y:16.8,r3:-4.8,r1:12.8}],lab:"ENE"},
+];
+draw(document.getElementById('setT'),SETT,{xlo:-20,xhi:26,ylo:-15,yhi:18});
+draw(document.getElementById('hkT'),HKT,{xlo:-24,xhi:16,ylo:-19,yhi:14});
+const UST=[
+{tk:"Semicap",nm:"Semiconductor Equip",p:[{x:95.8,y:47.9,r3:113.9,r1:46.7},{x:14.6,y:-17.5,r3:18.2,r1:-16.6}],lab:"Semicap"},
+{tk:"Elec Comp",nm:"Electronic Components",p:[{x:51.0,y:25.4,r3:69.0,r1:24.2},{x:-8.7,y:-21.1,r3:-5.1,r1:-20.3}],lab:"Elec Comp"},
+{tk:"Intgr Oil",nm:"Integrated Oil & Gas",p:[{x:-38.6,y:-5.8,r3:-20.6,r1:-7.0},{x:2.6,y:13.7,r3:6.3,r1:14.6}],lab:"Intgr Oil"},
+{tk:"Comp/Elec Rt",nm:"Comp & Elec Retail",p:[{x:-0.7,y:-2.6,r3:17.4,r1:-3.8},{x:42.4,y:9.1,r3:46.0,r1:9.9}],lab:"Comp/Elec Rt"},
+{tk:"OG Refining",nm:"Oil & Gas Refining",p:[{x:-15.9,y:5.3,r3:2.1,r1:4.1},{x:26.7,y:18.7,r3:30.3,r1:19.5}],lab:"OG Refining"},
+{tk:"Commod Chem",nm:"Commodity Chemicals",p:[{x:-52.8,y:-18.0,r3:-34.8,r1:-19.2},{x:-21.8,y:4.1,r3:-18.2,r1:5.0}],lab:"Commod Chem"},
+{tk:"HR Svc",nm:"HR & Employ Svc",p:[{x:-10.3,y:2.0,r3:7.8,r1:0.8},{x:24.2,y:11.5,r3:27.8,r1:12.3}],lab:"HR Svc"},
+{tk:"Heavy Trucks",nm:"Cons Mach & Heavy Trucks",p:[{x:27.8,y:18.2,r3:45.9,r1:17.0},{x:2.9,y:-7.0,r3:6.5,r1:-6.1}],lab:"Heavy Trucks"},
+{tk:"Oil E&P",nm:"Oil & Gas Exploration",p:[{x:-34.9,y:-3.2,r3:-16.8,r1:-4.4},{x:-3.7,y:9.1,r3:-0.1,r1:9.9}],lab:"Oil E&P"},
+{tk:"Semis",nm:"Semiconductors",p:[{x:32.7,y:-2.1,r3:50.8,r1:-3.3},{x:-0.4,y:-1.8,r3:3.2,r1:-0.9}],lab:"Semis"},
+{tk:"Data Proc",nm:"Data Processing",p:[{x:-34.9,y:-10.4,r3:-16.9,r1:-11.6},{x:-7.7,y:7.1,r3:-4.1,r1:8.0}],lab:"Data Proc"},
+{tk:"Airlines",nm:"Passenger Airlines",p:[{x:33.0,y:18.0,r3:51.1,r1:16.8},{x:21.4,y:-11.5,r3:25.1,r1:-10.7}],lab:"Airlines"},
+{tk:"Agri Prod",nm:"Agricultural Products",p:[{x:-16.9,y:-4.0,r3:1.1,r1:-5.2},{x:11.0,y:10.5,r3:14.7,r1:11.3}],lab:"Agri Prod"},
+{tk:"Intgr Telco",nm:"Integrated Telecom",p:[{x:-37.9,y:-9.5,r3:-19.8,r1:-10.7},{x:-8.8,y:2.0,r3:-5.2,r1:2.9}],lab:"Intgr Telco"},
+{tk:"Wireless Tel",nm:"Wireless Telecom",p:[{x:-35.5,y:-6.0,r3:-17.5,r1:-7.2},{x:-4.5,y:-2.3,r3:-0.9,r1:-1.4}],lab:"Wireless Tel"},
+{tk:"Restaurant &",nm:"Restaurant & Consumer Svc",p:[{x:-31.1,y:-3.6,r3:-13.0,r1:-4.8},{x:-2.3,y:8.4,r3:1.3,r1:9.3}],lab:"Restaurant &"},
+{tk:"Heavy Elec",nm:"Heavy Electrical Equip",p:[{x:11.2,y:15.1,r3:29.2,r1:13.9},{x:-13.0,y:-3.8,r3:-9.4,r1:-2.9}],lab:"Heavy Elec"},
+{tk:"Fncl Exch",nm:"Fncl Exch & Data",p:[{x:-28.1,y:-11.4,r3:-10.1,r1:-12.6},{x:-7.2,y:10.2,r3:-3.6,r1:11.1}],lab:"Fncl Exch"},
+{tk:"Div Supp Svc",nm:"Div Supp Svc",p:[{x:-22.4,y:-4.3,r3:-4.4,r1:-5.5},{x:3.6,y:10.0,r3:7.2,r1:10.8}]},
+{tk:"Const/Eng",nm:"Const & Engineering",p:[{x:18.3,y:3.6,r3:36.4,r1:2.4},{x:-8.7,y:-8.7,r3:-5.1,r1:-7.8}]},
+{tk:"Managed HC",nm:"Managed Health Care",p:[{x:43.8,y:10.5,r3:61.8,r1:9.2},{x:18.0,y:-2.8,r3:21.6,r1:-1.9}]},
+{tk:"Fert & Agr C",nm:"Fert & Agr Chem",p:[{x:-23.0,y:5.4,r3:-4.9,r1:4.2},{x:4.9,y:8.5,r3:8.5,r1:9.4}]},
+{tk:"Ind Congl",nm:"Industrial Conglomerates",p:[{x:-14.0,y:-1.4,r3:4.0,r1:-2.6},{x:11.7,y:2.9,r3:15.3,r1:3.7}]},
+{tk:"Food Retail",nm:"Food Retail",p:[{x:-32.7,y:-3.5,r3:-14.6,r1:-4.7},{x:-7.9,y:3.3,r3:-4.3,r1:4.2}]},
+{tk:"Insur Broker",nm:"Insurance Brokers",p:[{x:-19.3,y:7.9,r3:-1.2,r1:6.7},{x:5.7,y:8.1,r3:9.3,r1:8.9}]},
+{tk:"Biotech",nm:"Biotech",p:[{x:-9.8,y:10.7,r3:8.2,r1:9.5},{x:12.4,y:0.8,r3:16.0,r1:1.7}]},
+{tk:"Pass Grnd",nm:"Passenger Ground Transport",p:[{x:-8.9,y:8.4,r3:9.1,r1:7.2},{x:-17.1,y:-14.3,r3:-13.5,r1:-13.5}]},
+{tk:"Other Spec R",nm:"Other Specialty Retail",p:[{x:-39.6,y:-5.6,r3:-21.6,r1:-6.8},{x:-15.7,y:-2.6,r3:-12.1,r1:-1.8}]},
+{tk:"Broadcast",nm:"Broadcasting",p:[{x:-28.7,y:-16.8,r3:-10.7,r1:-18.0},{x:-18.3,y:4.7,r3:-14.7,r1:5.5}]},
+{tk:"Health Care ",nm:"Health Care Distributors",p:[{x:-23.0,y:7.9,r3:-4.9,r1:6.7},{x:0.4,y:4.7,r3:4.0,r1:5.6}]},
+{tk:"Pharma",nm:"Pharmaceuticals",p:[{x:-3.8,y:9.5,r3:14.3,r1:8.3},{x:18.0,y:0.6,r3:21.6,r1:1.5}]},
+{tk:"Footwear",nm:"Footwear",p:[{x:-32.9,y:-9.8,r3:-14.9,r1:-11.0},{x:-11.1,y:-1.0,r3:-7.5,r1:-0.1}]},
+{tk:"Tobacco",nm:"Tobacco",p:[{x:-8.8,y:3.9,r3:9.3,r1:2.6},{x:14.7,y:3.5,r3:18.3,r1:4.4}]},
+{tk:"Paper Pkg",nm:"Paper & Plastic Pkg",p:[{x:-6.5,y:11.3,r3:11.6,r1:10.1},{x:15.3,y:3.3,r3:18.9,r1:4.1}]},
+{tk:"Water Utilit",nm:"Water Utilities",p:[{x:-22.1,y:9.2,r3:-4.1,r1:8.0},{x:-0.9,y:0.6,r3:2.8,r1:1.5}]},
+{tk:"Elec Mfg",nm:"Elec Manu Svc",p:[{x:5.6,y:4.5,r3:23.7,r1:3.3},{x:-11.9,y:-10.0,r3:-8.3,r1:-9.2}]},
+{tk:"Homebuild",nm:"Homebuilding",p:[{x:-2.0,y:11.7,r3:16.1,r1:10.5},{x:-8.4,y:-9.8,r3:-4.8,r1:-9.0}]},
+{tk:"Packaged Foo",nm:"Packaged Foods",p:[{x:-20.8,y:-0.4,r3:-2.7,r1:-1.6},{x:1.6,y:-0.3,r3:5.2,r1:0.6}]},
+{tk:"Oil & Gas St",nm:"Oil & Gas Storage & Transp",p:[{x:-16.1,y:7.3,r3:1.9,r1:6.1},{x:4.6,y:-1.2,r3:8.2,r1:-0.4}]},
+{tk:"Tech HW",nm:"Tech HW Storage & Periph",p:[{x:8.3,y:-5.2,r3:26.3,r1:-6.4},{x:23.5,y:11.1,r3:27.1,r1:12.0}]},
+];
+draw(document.getElementById('usT'),UST,{xlo:-56,xhi:100,ylo:-24,yhi:52});
+draw(document.getElementById('cnT'),CNT,{xlo:-36,xhi:70,ylo:-19,yhi:22});
+
+/* journey table */
+const jtb=document.getElementById('jt');
+function pill(q){return `<span class="qp" style="background:${Q[q].hex}22;color:${Q[q].hex}">${q}</span>`;}
+T.slice().sort((a,b)=>{
+  const da=Math.hypot(a.p[2].x-a.p[0].x,a.p[2].y-a.p[0].y), db=Math.hypot(b.p[2].x-b.p[0].x,b.p[2].y-b.p[0].y);
+  return db-da;
+}).forEach(mk=>{
+  const qs=mk.p.map(p=>quad(p.x,p.y));
+  const moved=new Set(qs).size>1;
+  let dist=0; for(let i=1;i<mk.p.length;i++) dist+=Math.hypot(mk.p[i].x-mk.p[i-1].x, mk.p[i].y-mk.p[i-1].y);
+  const dx=(mk.p[2].x-mk.p[0].x);
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td><b>${mk.nm}</b> ${moved?'<span class="moved">moved</span>':''}</td>
+    <td>${pill(qs[0])}<span class="arrow">→</span>${pill(qs[1])}<span class="arrow">→</span>${pill(qs[2])}</td>
+    <td class="r" style="color:${dx>=0?'var(--lead)':'var(--lag)'}">${fmt(dx)}</td>
+    <td class="r">${dist.toFixed(1)}</td>`;
+  jtb.appendChild(tr);
+});
+
+}
+renderAll();
+document.getElementById('btnTH').onclick=()=>setLang('th');
+document.getElementById('btnEN').onclick=()=>setLang('en');
+</script>
+</body>
+</html>
